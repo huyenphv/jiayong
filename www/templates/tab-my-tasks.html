@@ -1,0 +1,27 @@
+   <ion-header-bar class="bar-subheader">
+        <div class="button-bar">
+            <div class="button-bar">
+                <a class="button button-clear button-dark " ng-class="{'active' : activeTab == 1}" ng-click = "changeActiveTab(1)" >Available</a>
+                <a class="button button-clear button-dark "  ng-class="{'active' : activeTab == 2}" ng-click = "changeActiveTab(2)" >In Progress</a>
+                <a class="button button-clear button-dark " ng-class="{'active' : activeTab == 3}" ng-click = "changeActiveTab(3)" >Completed</a>
+
+            </div>
+        </div>
+  </ion-header-bar>
+<ion-view title="Created Tasks" animation="no-animation" cache-view="false" hide-back-button ="true">
+  <ion-nav-buttons side="right">
+    <button class="button button-icon button-clear button-dark ion-ios-plus-outline" ui-sref="menu.tab.create-task"></button>
+  </ion-nav-buttons>
+  <ion-nav-buttons side="left">
+    <button menu-toggle="left"class="button button-icon button-clear button-dark ion-navicon"></button>
+  </ion-nav-buttons>
+  <ion-content class="has-header">
+    <ion-list can-swipe="true" ng-show="tasksAvailable.length == 0">
+      <center>
+        <h1>Oops.</h1>
+        <p>Seems like there isn't any task!</p>
+        <button class="button button-balanced" type="button"  ui-sref="menu.tab.create-task">Create Tasks!</button>
+      </center>
+    </ion-list>
+  </ion-content>
+</ion-view>
