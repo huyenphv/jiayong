@@ -88,6 +88,23 @@ angular.module('jiaYongAppChild', ['ionic', 'jiaYongAppChild.controllers', 'jiaY
     }
   })
 
+  // to edit the proposal detail by id
+  .state('menu.tab.my-tasks.editProposal', {
+    url:'/editProposal/:id',
+    views: {
+      'tab-my-tasks':{
+        templateUrl: 'templates/child/view-task.html',
+        controller: 'EditProposalCtrl',
+        resolve:{
+          task: function(){
+            //get the task ID to display
+          }
+        }
+      }
+    }
+  })
+
+
   .state('menu.tab.profile', {
     url: '/profile',
     views: {

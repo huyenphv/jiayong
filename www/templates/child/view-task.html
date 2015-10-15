@@ -59,6 +59,52 @@
 		    	<button class="button button-block button-calm icon-left ion-camera">Take Photo(s)!</button>
 		  </div>
 
+		  <!-- Send task for approval -->
+		  <div ng-show="task.isAvailable == false && task.isCompleted == false">
+		  <center>
+		  	<button class="button button-block button-balanced" type="button" ng-click="completeTask()" >
+		  		Complete Task!
+		  	</button>
+		  	<button class="button button-assertive" type="button" ng-click="removeTask()" >
+		  		Remove Task!
+		  	</button>
+		  </center>
 		</div>
+
+		<!-- Rejected Task -->
+		  <div ng-show="task.isRejected == true">
+		  <center>
+		  	<button class="button button-balanced" type="button" ng-click="retakeSubmit()" >
+		  		Re-Take Photos!
+		  	</button>
+		  	<button class="button button-assertive" type="button" ng-click="removeTask()" >
+		  		Remove Task!
+		  	</button>
+		  </center>
+		</div>
+
+
+		<!-- Take up Task -->
+		  <div ng-show="task.isAvailable == true">
+		  <center>
+		  	<button class="button button-block button-balanced" type="button" ng-click="takeUpTask()" >
+		  		Take Up Task!
+		  	</button>
+		  </center>
+		</div>
+
+		<!-- Rejected Proposal -->
+		  <div ng-show="task.isRejected == true && task.isProposed == true">
+		  <center>
+		  	<button class="button button-balanced" type="button" ui-sref="menu.tab.my-tasks.editProposal" >
+		  		Edit Proposal!
+		  	</button>
+		  	<button class="button button-assertive" type="button" ng-click="removeTask()" >
+		  		Remove Task!
+		  	</button>
+		  </center>
+		</div>
+
+
   </ion-content>
 </ion-view>

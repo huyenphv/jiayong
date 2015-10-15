@@ -136,5 +136,31 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
     
    }
 
+   $scope.completeTask = function(){
+
+   }
+
+   // remove the task
+   $scope.removeTask = function(){
+    
+   }
+
+  $scope.retakeSubmit = function(){
+    // retake photos and submit the task for approval again
+  }
+
 });
+
+.controller('EditProposalCtrl', function($scope, $window) {
+  var config = { cache: false };
+  // get detail of task to edit
+
+  $scope.submitProposal = function(){
+    // submit the task for approval again
+  }
+  
+
+});
+
+
 
