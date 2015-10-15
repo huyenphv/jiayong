@@ -16,6 +16,29 @@ angular.module('jiaYongAuth.controllers', [])
       template: '<i class="icon ion-loading-c"></i> Logging in..'
     });
 
+    $http.get(
+      address + "/api/object/get/app/8/objecttype/34",config)
+    .success(function(data, status) { 
+        $window.localStorage['users'] = JSON.stringify(data);
+        $window.localStorage['daisy'] = data[0];
+        $window.localStorage['luke'] = data[2];
+    }).error(function(data, status){
+      $ionicLoading.hide();
+      $scope.message = data;
+    });
+
+    $http.get(
+      address + "/api/object/get/app/8/objecttype/35",config)
+    .success(function(data, status) { 
+        $window.localStorage['tasks'] = JSON.stringify(data);
+        $scope.tasks = JSON.parse(JSON.stringify(data));
+        console.log($scope.tasks);
+        // $window.localStorage['availableTasks'] = 
+        // $window.location.href = 'jiaYong.html';
+    }).error(function(data, status){
+      $ionicLoading.hide();
+      $scope.message = data;
+    });
 
     $http.post(
       address + "/user/login",
@@ -26,8 +49,12 @@ angular.module('jiaYongAuth.controllers', [])
       config)
     .success(function(data, status) { 
         $window.localStorage['currentUser'] = JSON.stringify(data);
-        $window.localStorage['availableTasks'] = "";
-        $window.location.href = 'jiaYong.html';
+        if(data.email == "daisy@gmail.com")
+        {
+            $window.location.href = 'jiaYong.html';
+        }else{
+            $window.location.href = 'jiaYong-child.html';
+        }
         $ionicLoading.hide();
       
     }).error(function(data, status){
