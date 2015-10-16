@@ -1,0 +1,110 @@
+<ion-view view-title="{{task.name}}" animation="no-animation" cache-view="false" hide-back-button ="true">
+  <ion-content>
+    <div class="list card">	
+		  <div class="item item-icon-left item-text-wrap">
+		  	<label class="item-stacked-label">
+        	<span class="input-label">Description</span></label>
+		    <i class="icon ion-clipboard"></i>
+    			{{task.description}}
+		  </div>
+
+		  <div class="item item-icon-left item-text-wrap">
+		  	<label class="item-stacked-label">
+        	<span class="input-label">Status</span></label>
+		    <i class="icon ion-information-circled"></i>
+
+		    	<!-- status : In Progress -->
+		    	<div ng-if="(task.isAvailable == false && task.isCompleted == false)">
+		    		In Progress
+		    	</div>
+
+		    	<!-- status : Available -->
+		    	<div ng-if="(task.isAvailable == true)">
+		    		Available
+		    	</div>
+
+		    	<!-- status : Completed -->
+		    	<div ng-if="(task.isCompleted == true)">
+		    		Completed
+		    	</div>
+
+		    	<!-- status : Rejected -->
+		    	<div ng-if="(task.isRejected == true)">
+		    		Rejected
+		    	</div>
+
+		    	
+		  </div>
+
+		  <div class="item item-icon-left item-text-wrap" ng-if="task.status !='Completed'">
+			<label class="item-stacked-label">
+        	<span class="input-label">Earnings</span></label>
+		    <div class="col-20">
+		    	<i class="icon ion-cash"></i>
+			</div> 
+			<table>
+				<tr>
+					<td class="padding-right">Average: ${{task.Average}}</td>
+					<td class="padding-right">Good: ${{task.Good}}</td>
+					<td class="padding-right">Excellent: ${{task.Excellent}}</td>
+				</tr>
+				</table>
+		  </div>
+
+		  <!-- camera function goes here! -->
+		  <div ng-if="task.isAvailable==false && task.isCompleted==false" class="item item-icon-left item-text-wrap">
+		  	<label class="item-stacked-label">
+        	<span class="input-label">Photo(s)</span></label>
+		    <i class="icon ion-images"></i>
+		    	<button class="button button-block button-calm icon-left ion-camera">Take Photo(s)!</button>
+		  </div>
+
+		  <!-- Send task for approval -->
+		  <div ng-show="task.isAvailable == false && task.isCompleted == false">
+		  <center>
+		  	<button class="button button-block button-balanced" type="button" ng-click="completeTask()" >
+		  		Complete Task!
+		  	</button>
+		  	<button class="button button-assertive" type="button" ng-click="removeTask()" >
+		  		Remove Task!
+		  	</button>
+		  </center>
+		</div>
+
+		<!-- Rejected Task -->
+		  <div ng-show="task.isRejected == true">
+		  <center>
+		  	<button class="button button-balanced" type="button" ng-click="retakeSubmit()" >
+		  		Re-Take Photos!
+		  	</button>
+		  	<button class="button button-assertive" type="button" ng-click="removeTask()" >
+		  		Remove Task!
+		  	</button>
+		  </center>
+		</div>
+
+
+		<!-- Take up Task -->
+		  <div ng-show="task.isAvailable == true">
+		  <center>
+		  	<button class="button button-block button-balanced" type="button" ng-click="takeUpTask()" >
+		  		Take Up Task!
+		  	</button>
+		  </center>
+		</div>
+
+		<!-- Rejected Proposal -->
+		  <div ng-show="task.isRejected == true && task.isProposed == true">
+		  <center>
+		  	<button class="button button-balanced" type="button" ui-sref="menu.tab.my-tasks.editProposal" >
+		  		Edit Proposal!
+		  	</button>
+		  	<button class="button button-assertive" type="button" ng-click="removeTask()" >
+		  		Remove Task!
+		  	</button>
+		  </center>
+		</div>
+
+
+  </ion-content>
+</ion-view>

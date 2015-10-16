@@ -1,0 +1,60 @@
+<ion-view view-title="Propose Task" animation="no-animation" cache-view="false" hide-back-button ="true">
+  <ion-content>
+    <form class="list" ng-model="form" name="form" ng-submit="proposeTask()" novalidate>
+      <div class="list" ng-class="{ 'has-success': form.name.$valid && submitted, 'has-error': form.name.$invalid && submitted }">
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Task Name</span>
+          <input type="text" placeholder="Name of the Task" ng-minlength="3" name="name" ng-model="task.name" required />
+          <p class="help-block" ng-show="form.name.$error.required && submitted">
+              A name is required
+          </p>
+        </label>
+
+      <div class="list" ng-class="{ 'has-success': form.description.$valid && submitted, 'has-error': form.name.$invalid && submitted }">
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Description</span>
+          <input type="text" placeholder="Specific steps or actions" name="description" ng-minlength="3" ng-model="task.description" required />
+          <p class="help-block" ng-show="form.description.$error.required && submitted">
+              A value is required
+          </p>
+        </label>
+
+      <div class="list" ng-class="{ 'has-success': form.min.$valid && submitted, 'has-error': form.name.$invalid && submitted }">
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Average Amount ($)</span>
+          <input type="number" name="min" placeholder="Amount paid for an Average job done" ng-minlength="1" min ="0" ng-model="task.averageAmount" required/>
+          <p class="help-block" ng-show="form.min.$error.required && submitted">
+              A value is required
+          </p>
+        </label>
+
+      <div class="list" ng-class="{ 'has-success': form.good.$valid && submitted, 'has-error': form.name.$invalid && submitted }">
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Good Amount ($)</span>
+          <input type="number" name="good" placeholder="Amount paid for a Good job done" ng-minlength="1" ng-model="task.goodAmount" required/>
+          <p class="help-block" ng-show="form.good.$error.required && submitted">
+              A value is required
+          </p>
+        </label>
+
+      <div class="list" ng-class="{ 'has-success': form.excellent.$valid && submitted, 'has-error': form.name.$invalid && submitted }">
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Excellent Amount ($)</span>
+          <input type="number" name="excellent" placeholder="Amount paid for an Excellent job done" ng-minlength="1" ng-model="task.excellentAmount"required/>
+          <p class="help-block" ng-show="form.excellent.$error.required && submitted">
+              A value is required
+          </p>
+        </label>
+      </div>
+      </div>
+      </div>
+      </div>
+      </div>
+
+      <button class="button button-block button-energized" ng-disabled="eventForm.$invalid" type="submit">
+        Re-Propose Task!
+      </button>
+    </form>
+      
+    </ion-content>
+</ion-view>
