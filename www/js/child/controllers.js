@@ -148,8 +148,34 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
 
   //take photo
    $scope.takeUpTask = function(){
-      $scope.task.isAvailable = false;
-      $scope.task.isCompleted = false;
+      console.log($scope.task.isAvailable);
+      var request = {
+            "appId": 8,
+            "properties": [
+                {"isAvailable": ! $scope.task.isAvailable}
+            ]
+        };
+
+    $http.put("http://161.202.13.188:9000/api/object/" + $scope.task.id + "/update/properties",request,config)
+    .success(function(data, status) {
+        $http.get(
+          "http://161.202.13.188:9000/api/object/get/app/8/objecttype/34",config)
+        .success(function(data, status) { 
+            $window.localStorage['users'] = JSON.stringify(data);
+            $window.localStorage['daisy'] = JSON.stringify(data[0]);
+            // $window.localStorage['avail'] = JSON.stringify(data[0].availabTasks);
+            $window.localStorage['luke'] = JSON.stringify(data[2]);
+        }).error(function(data, status){
+          $ionicLoading.hide();
+          $scope.message = data;
+        });
+        $scope.activeTab = 2;
+        $state.go('menu.tab.my-tasks',null,{reload:true});
+   }).error(function(data, status){
+      console.log(data);
+    }).finally(function(){
+        $ionicLoading.hide();
+    });
    }
 
    $scope.openCameraActionSheet = function(){
@@ -228,8 +254,7 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
       var request = {
             appId: 8,
             properties: [
-                {isCompleted: true},
-                {isAvailable: false}
+                {isCompleted: ! $scope.task.isCompleted}
             ]
         };
     $http.put("http://161.202.13.188:9000/api/object/" + $scope.task.id + "/update/properties",JSON.stringify(request),config)

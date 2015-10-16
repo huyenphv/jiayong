@@ -45,7 +45,7 @@
 
   <div class="has-header" ng-if="activeTab==2">
     <ion-list can-swipe="true" ng-show="currentUser.availableTasks.length != 0">
-      <ion-item ng-repeat="task in currentUser.availableTasks | filter: {isAvailable : false}" ng-click = "detail(task)" class="item item-thumbnail-left">
+      <ion-item ng-repeat="task in currentUser.availableTasks | filter: {  isAvailable : false}" ng-click = "detail(task)" class="item item-thumbnail-left">
 
             <img src="../img/venkman.jpg">
             <h2>{{task.name}}</h2>
