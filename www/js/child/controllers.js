@@ -137,13 +137,13 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
   var config = { cache: false };
   // get individual task according to ID
   $scope.taskId = $stateParams.id;
-
-  $scope.allTasks = JSON.parse($window.localStorage['tasks']);
-
-  $scope.task = $filter('filter')($scope.allTasks, {id:$scope.taskId})[0];
-
+  console.log($scope.taskId);
   $scope.luke = JSON.parse($window.localStorage.getItem("luke"));
   $scope.daisy = JSON.parse($window.localStorage.getItem("daisy"));
+  $scope.allTasks = JSON.parse($window.localStorage['luke']).availableTasks;
+  console.log($scope.allTasks);
+  $scope.task = $filter('filter')($scope.allTasks, {id:$scope.taskId})[0];
+  console.log($scope.task);
   // take photo and submit task
 
   //take photo
@@ -226,9 +226,10 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
 
    $scope.completeTask = function(){
       var request = {
-            "appId": 8,
-            "properties": [
-                {"isCompleted": true}
+            appId: 8,
+            properties: [
+                {isCompleted: true},
+                {isAvailable: false}
             ]
         };
     $http.put("http://161.202.13.188:9000/api/object/" + $scope.task.id + "/update/properties",JSON.stringify(request),config)
@@ -236,35 +237,19 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
        // $scope.allAvailableTasks.push(data);
        var index = $scope.luke.availableTasks.indexOf(data);
         $scope.luke.availableTasks.splice(index,1);
+        console.log($scope.luke.availableTasks);
         $scope.luke.completedTasks.push(data);
         var daisyIndex = $scope.daisy.availableTasks.indexOf(data);
         $scope.daisy.availableTasks.splice(index,1);
+        console.log($scope.daisy.availableTasks);
         $scope.daisy.completedTasks.push(data);
         $window.localStorage['daisy'] = JSON.stringify($scope.daisy);
         $window.localStorage['luke'] = JSON.stringify($scope.luke);
-        $http.put("http://161.202.13.188:9000/api/object/871/update/properties",
-        {
-          
-          "appId": 8,
-          "propertyName": 
-            [
-              {"availableTasks": $scope.luke.availableTasks},
-              {"completedTasks": $scope.luke.completedTasks}
-            ]
-
-        },config)
-      .success(function(response, status) {
-            $http.put("http://161.202.13.188:9000/api/object/873/update/properties",
-            {
-              
-              "appId": 8,
-              "propertyName": 
-                [
-                  {"availableTasks": $scope.luke.availableTasks},
-                  {"completedTasks": $scope.luke.completedTasks}
-                ]
-
-            },config)
+        $scope.daisy.appId = 8;
+        $scope.luke.appId = 8;
+        $http.put("http://161.202.13.188:9000/api/object/update/873",JSON.stringify($scope.daisy),config)
+        .success(function(response, status) {
+            $http.put("http://161.202.13.188:9000/api/object/update/871",JSON.stringify($scope.luke),config)
             .success(function(data, status) {
                $state.go('menu.tab.my-tasks',null,{reload:true});
             }).error(function(data, status){
