@@ -16,7 +16,12 @@
     <button menu-toggle="left"class="button button-icon button-clear button-dark ion-navicon"></button>
   </ion-nav-buttons>
   <ion-content class="has-header">
-    <ion-list can-swipe="true" ng-show="tasksAvailable.length == 0">
+    <ion-list can-swipe="true" ng-show="currentUser.availableTasks.length != 0">
+        <ion-item class="item" ng-click="console.log()" href ui-sref="app.details({id:task.id})" ng-repeat="task in currentUser.availableTasks ">
+            <h2>{{task.name}}</h2>
+        </ion-item>
+    </ion-list>
+    <ion-list can-swipe="true" ng-show="currentUser.availableTasks.length == 0">
       <center>
         <h1>Oops.</h1>
         <p>Seems like there isn't any task!</p>

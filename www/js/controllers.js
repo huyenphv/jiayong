@@ -1,7 +1,7 @@
 angular.module('jiaYongApp.controllers', [])
 /* @screen: Logout of the app */
 .controller('LogoutCtrl', function(
-$scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
+$scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading, $rootScope)
 {
   $scope.tryLogout = function(){
     var config = { cache: false };
@@ -23,27 +23,23 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
   $scope.tryLogout();
 })
 
-.controller('MyTasksCtrl', function($scope, $window, $state, $ionicLoading) {
+.controller('MyTasksCtrl', function($scope, $localstorage,$window, $state, $ionicLoading) {
   var config = { cache: false };
   $scope.activeTab = 1;
 
   $scope.changeActiveTab = function(tab){
     $scope.activeTab = tab;  
   }
-  // alert('yo');
-  // $scope.tasksAvailable = JSON.parse($window.localStorage.getItem("availableTasks"));
-  $scope.tasksAvailable = [];
-  if($scope.tasksAvailable == null)
-  {
-    $scope.tasksAvailable = [];
-  }
-  // alert($scope.tasksAvailable.length);
-  $scope.currentUser = JSON.parse($window.localStorage.getItem("currentUser"));
+  $scope.currentUser = JSON.parse($window.localStorage.getItem("daisy"));
+  alert($scope.currentUser);
 })
 
-.controller('CreateTaskCtrl', function($scope, $window, $http,$ionicLoading) {
+.controller('CreateTaskCtrl', function($scope, $window, $localstorage, $http,$ionicLoading, $rootScope) {
   var config = { cache: false };
+  var self = this;
   $scope.currentUser = JSON.parse($window.localStorage.getItem("currentUser"));
+   $scope.luke = JSON.parse($window.localStorage.getItem("luke"));
+   console.log($scope.luke);
   $scope.task =
   {
     country: "Singapore",
@@ -171,26 +167,51 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
             {assignTo: $scope.task.assignTo}
         ]
       };
+    $scope.newTaskId = 0;
+    $scope.daisy = JSON.parse($window.localStorage.getItem("daisy"));
+    $scope.luke = JSON.parse($window.localStorage.getItem("luke"));
     $http.post("http://161.202.13.188:9000/api/object/create",JSON.stringify($scope.newTask),config)
     .success(function(data, status) {
-       $scope.availableTasks = JSON.parse($window.localStorage.getItem("availableTasks"));
-       if ($scope.availableTasks == null)
-       {
-          $scope.availableTasks = [];
-       }
-       $scope.availableTasks.push(data);
-       $window.localStorage['availableTasks'] = $scope.availableTasks;
-       console.log(data);
-       console.log($scope.availableTasks);
-       window.location.href = 'jiaYong.html#/my-tasks';
+       $scope.daisy.availableTasks.push(data);
+       $scope.luke.availableTasks.push(data);
+       $window.localStorage['daisy'] = JSON.stringify($scope.daisy);
+       $window.localStorage['luke'] = JSON.stringify($scope.luke);
+       $localstorage.setObject('newTaskId',data.id);
+       // window.location.href = 'jiaYong.html#/my-tasks';
+    }).error(function(data, status){
+      console.log(data);
+    });
+    
+    $scope.newTaskId = $localstorage.getObject('newTaskId',0);
+    alert($scope.newTaskId);
+    $http.post("http://161.202.13.188:9000/api/object/871/relationship/add/"+$scope.newTaskId,
+      {
+        
+        "appId": 8,
+        "propertyName": "availableTasks"
+
+      },config)
+    .success(function(data, status) {
+      console.log(data);
+    }).error(function(data, status){
+      console.log(data);
+    });
+
+    $http.post("http://161.202.13.188:9000/api/object/873/relationship/add/"+ $scope.newTaskId,
+      {
+        "appId": 8,
+        "propertyName": "availableTasks"        
+      
+    },config)
+    .success(function(data, status) {
+       console.log("success");
+       $window.location.href = 'jiaYong.html#/my-tasks';
     }).error(function(data, status){
       console.log(data);
     }).finally(function(){
       $ionicLoading.hide();
     });
-    };
-
-
+  };
 })
 
 .controller('PendingTasksCtrl', function($scope) {
