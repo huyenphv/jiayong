@@ -54,6 +54,7 @@ angular.module('jiaYongAppChild', ['ionic', 'jiaYongAppChild.controllers', 'jiaY
 
   .state('menu.tab.my-tasks', {
     url: '/my-tasks',
+    cache: false,
     views: {
       'tab-my-tasks': {
         templateUrl: 'templates/child/my-tasks.html',
@@ -62,47 +63,54 @@ angular.module('jiaYongAppChild', ['ionic', 'jiaYongAppChild.controllers', 'jiaY
     }
   })
 
+ .state('menu.tab.my-propose-task', {
+    url: '/my-propose-task',
+    cache: false,
+    views: {
+      'tab-propose-task': {
+        templateUrl: 'templates/child/tab-pending-approval-tasks.html',
+        controller: 'MyProposedTasksCtrl'
+      }
+    }
+  })
+
  .state('menu.tab.propose-task', {
     url: '/propose-task',
     views: {
-      'tab-propose-task': {
-        templateUrl: 'templates/child/propose-task.html',
-        controller: 'ProposeTaskCtrl'
-      }
+        'tab-propose-task': {
+          templateUrl: 'templates/child/propose-task.html',
+          controller: 'ProposeTaskCtrl'
+        }
     }
   })
 
   // to view the task detail by id
-  .state('menu.tab.my-tasks.view', {
+  .state('menu.tab.view-my-task', {
     url:'/details/:id',
+    cache: false,
     views: {
       'tab-my-tasks':{
         templateUrl: 'templates/child/view-task.html',
-        controller: 'ViewTaskCtrl',
-        resolve:{
-          task: function(){
-            //get the task ID to display
-          }
-        }
+        controller: 'ViewMyTaskDetailCtrl'
       }
     }
   })
 
-  // to edit the proposal detail by id
-  .state('menu.tab.my-tasks.editProposal', {
-    url:'/editProposal/:id',
-    views: {
-      'tab-my-tasks':{
-        templateUrl: 'templates/child/view-task.html',
-        controller: 'EditProposalCtrl',
-        resolve:{
-          task: function(){
-            //get the task ID to display
-          }
-        }
-      }
-    }
-  })
+  // // to edit the proposal detail by id
+  // .state('menu.tab.my-tasks.editProposal', {
+  //   url:'/editProposal/:id',
+  //   views: {
+  //     'tab-my-tasks':{
+  //       templateUrl: 'templates/child/view-task.html',
+  //       controller: 'EditProposalCtrl',
+  //       resolve:{
+  //         task: function(){
+  //           //get the task ID to display
+  //         }
+  //       }
+  //     }
+  //   }
+  // })
 
 
   .state('menu.tab.profile', {
@@ -115,7 +123,15 @@ angular.module('jiaYongAppChild', ['ionic', 'jiaYongAppChild.controllers', 'jiaY
     }
   })
 
-
+  .state('menu.tab.account-logout', {
+    url: '/account-logout',
+    views: {
+        'tab-profile': {
+        templateUrl: 'templates/login.html',
+        controller: 'LogoutCtrl'
+      }
+    }
+  })
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('menu/tab/my-tasks');
 

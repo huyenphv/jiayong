@@ -21,24 +21,25 @@ angular.module('jiaYongAuth.controllers', [])
     .success(function(data, status) { 
         $window.localStorage['users'] = JSON.stringify(data);
         $window.localStorage['daisy'] = JSON.stringify(data[0]);
+        // $window.localStorage['avail'] = JSON.stringify(data[0].availabTasks);
         $window.localStorage['luke'] = JSON.stringify(data[2]);
     }).error(function(data, status){
       $ionicLoading.hide();
       $scope.message = data;
     });
 
-    $http.get(
-      address + "/api/object/get/app/8/objecttype/35",config)
-    .success(function(data, status) { 
-        $window.localStorage['tasks'] = JSON.stringify(data);
-        $scope.tasks = JSON.parse(JSON.stringify(data));
-        console.log($scope.tasks);
-        // $window.localStorage['availableTasks'] = 
-        // $window.location.href = 'jiaYong.html';
-    }).error(function(data, status){
-      $ionicLoading.hide();
-      $scope.message = data;
-    });
+    // $http.get(
+    //   address + "/api/object/get/app/8/objecttype/35",config)
+    // .success(function(data, status) { 
+    //     $window.localStorage['tasks'] = JSON.stringify(data);
+    //     $scope.tasks = JSON.parse(JSON.stringify(data));
+    //     console.log($scope.tasks);
+    //     // $window.localStorage['availableTasks'] = 
+    //     // $window.location.href = 'jiaYong.html';
+    // }).error(function(data, status){
+    //   $ionicLoading.hide();
+    //   $scope.message = data;
+    // });
 
     $http.post(
       address + "/user/login",

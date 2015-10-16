@@ -1,0 +1,30 @@
+   <ion-header-bar class="bar-subheader">
+        <div class="button-bar">
+            <div class="button-bar">
+                <a class="button button-clear button-dark " ng-class="{'active' : activeTab == 1}" ng-click = "changeActiveTab(1)" >Pending</a>
+                <a class="button button-clear button-dark "  ng-class="{'active' : activeTab == 2}" ng-click = "changeActiveTab(2)" >Rejected</a>
+
+            </div>
+        </div>
+  </ion-header-bar>
+<ion-view title="Pending Approval Task" animation="no-animation" cache-view="false" hide-back-button ="true">
+  <ion-nav-buttons side="left">
+    <button menu-toggle="left"class="button button-icon button-clear button-dark ion-navicon"></button>
+  </ion-nav-buttons>
+  <ion-nav-buttons side="right">
+    <button class="button button-icon button-clear button-dark ion-ios-plus-outline" ui-sref="menu.tab.propose-task"></button>
+  </ion-nav-buttons>
+  <ion-content class="has-header">
+    <ion-list can-swipe="true" ng-show="currentUser.proposedTasks.length != 0">
+        <ion-item class="item" ng-click="detail(task)" ng-repeat="task in currentUser.proposedTasks ">
+            <h2>{{task.name}}</h2>
+        </ion-item>
+    </ion-list>
+    <ion-list can-swipe="true" ng-show="currentUser.proposedTasks.length == 0">
+      <center>
+        <h1>Oops.</h1>
+        <p>Seems like there is no new proposed task!</p>
+      </center>
+    </ion-list>
+  </ion-content>
+</ion-view>

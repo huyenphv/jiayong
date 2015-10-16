@@ -9,24 +9,89 @@
         </div>
   </ion-header-bar>
 <ion-view title="Created Tasks" animation="no-animation" cache-view="false" hide-back-button ="true">
-  <ion-nav-buttons side="right">
-    <button class="button button-icon button-clear button-dark ion-ios-plus-outline" ui-sref="menu.tab.create-task"></button>
-  </ion-nav-buttons>
+
   <ion-nav-buttons side="left">
     <button menu-toggle="left"class="button button-icon button-clear button-dark ion-navicon"></button>
   </ion-nav-buttons>
-  <ion-content class="has-header">
+  
+
+  <ion-content>
+
+  <!-- tab for available tasks -->
+
+  <div class="has-header" ng-if="activeTab==1">
     <ion-list can-swipe="true" ng-show="currentUser.availableTasks.length != 0">
-        <ion-item class="item" ng-click="console.log()" href ui-sref="app.details({id:task.id})" ng-repeat="task in currentUser.availableTasks ">
+      <ion-item ng-repeat="task in currentUser.availableTasks" ng-click = "detail(task)">
+
+           <a class="item item-thumbnail-left">
+            <img src="../img/venkman.jpg">
             <h2>{{task.name}}</h2>
-        </ion-item>
+            <p>{{task.description}}</p>
+            <small>{{ task.startDate | date }} | {{ task.startTime | date:'shortTime' }}</small><br/>
+            <small> ${{task.Average}} </small>
+          </a>
+
+      </ion-item>
     </ion-list>
     <ion-list can-swipe="true" ng-show="currentUser.availableTasks.length == 0">
       <center>
         <h1>Oops.</h1>
-        <p>Seems like there isn't any task!</p>
-        <button class="button button-balanced" type="button"  ui-sref="menu.tab.create-task">Create Tasks!</button>
+        <p>Seems like there isn't any tasks!</p>
+        <button class="button button-balanced" type="button"  ui-sref="menu.tab.create-task">Propose Task!</button>
       </center>
     </ion-list>
-  </ion-content>
+  </div>
+  
+<!-- tab for in progress tasks -->
+
+  <div ng-if="activeTab==2">
+    <ion-list can-swipe="true" ng-show="tasksAvailable.length != 0" ng-if="task.isCompleted == false && task.isPending == false">
+       <a href ng-repeat="task in tasksAvailable">
+          <ion-item class="item"> 
+          <h2>{{task.name}}</h2>
+          <p><i>{{task.description}}<i></p>
+          <span>
+            ${{task.Average}}
+          </span>
+          </ion-item>
+        </a>
+    </ion-list>
+    <ion-list can-swipe="true" ng-show="tasksAvailable.length == 0">
+      <center>
+        <h1>Oops.</h1>
+        <p>Seems like you do not have any tasks In Progress!!</p>
+        <button class="button button-balanced" type="button"  ui-sref="menu.tab.propose-task">Propose Task!</button>
+      </center>
+    </ion-list>
+  </div>
+
+  <!-- tab for pending tasks -->
+
+  <div ng-if="activeTab==3">
+    <ion-list can-swipe="true" ng-show="tasksAvailable.length != 0" ng-if="task.isPending == true">
+       <a href ng-repeat="task in tasksAvailable">
+          <div class="item item-divider" ng-if="task.isPending == true && task.isProposed == true">
+            Proposal
+          </div>
+          <div class="item item-divider" ng-if="task.isPending == true && task.isProposed == false">
+            Completion
+          </div>
+          <ion-item class="item"> 
+          <h2>{{task.name}}</h2>
+          <p><i>{{task.description}}<i></p>
+          <span>
+            ${{task.Average}}
+          </span>
+          </ion-item>
+        </a>
+    </ion-list>
+    <ion-list can-swipe="true" ng-show="tasksAvailable.length == 0">
+      <center>
+        <h1>Oops.</h1>
+        <p>Seems like you do not have any pending tasks!</p>
+      </center>
+    </ion-list>
+  </div>
+
+</ion-content>
 </ion-view>

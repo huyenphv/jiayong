@@ -1,26 +1,14 @@
    <ion-header-bar class="bar-subheader">
-            <div class="tabs">
-
-                <a class="tab-item " ng-class="{'active' : activeTab == 1}" ng-click = "changeActiveTab(1)" >
-                  Available</a>
-                <a class="tab-item" ng-class="{'active' : activeTab == 2}" ng-click = "changeActiveTab(2)" >
-                  In Progress</a>
-                <a class="tab-item"  ng-class="{'active' : activeTab == 3}" ng-click = "changeActiveTab(3)" >
-                  Pending</a>
-                <a class="tab-item" ng-class="{'active' : activeTab == 4}" ng-click = "changeActiveTab(4)" >
-                  Completed</a>
-                <a class="tab-item" ng-class="{'active' : activeTab == 5}" ng-click = "changeActiveTab(5)" >
-                  Rejected</a>
+        <div class="button-bar">
+            <div class="button-bar">
+                <a class="button button-clear button-dark " ng-class="{'active' : activeTab == 1}" ng-click = "changeActiveTab(1)" >Available</a>
+                <a class="button button-clear button-dark "  ng-class="{'active' : activeTab == 2}" ng-click = "changeActiveTab(2)" >In progress</a>
+                <a class="button button-clear button-dark "  ng-class="{'active' : activeTab == 3}" ng-click = "changeActiveTab(3)" >Completed</a>
 
             </div>
-
-
+        </div>
   </ion-header-bar>
 <ion-view title="My Tasks" animation="no-animation" cache-view="false" hide-back-button ="true">
-  
-  <ion-nav-buttons side="right">
-    <button class="button button-icon button-clear button-dark ion-android-add" ui-sref="menu.tab.propose-task"></button>
-  </ion-nav-buttons>
 
   <ion-nav-buttons side="left">
     <button menu-toggle="left"class="button button-icon button-clear button-dark ion-navicon"></button>
@@ -32,18 +20,19 @@
   <!-- tab for available tasks -->
 
   <div class="has-header" ng-if="activeTab==1">
-    <ion-list can-swipe="true" ng-show="tasksAvailable.length != 0" ng-if="task.isAvailable == true">
-       <a href ng-repeat="task in tasksAvailable">
-          <ion-item class="item"> 
-          <h2>{{task.name}}</h2>
-          <p><i>{{task.description}}<i></p>
-          <span>
-            ${{task.Average}}
-          </span>
-          </ion-item>
-        </a>
+    <ion-list can-swipe="true" ng-show="currentUser.availableTasks.length != 0">
+      <ion-item ng-repeat="task in currentUser.availableTasks" ng-click = "detail(task)" class="item item-thumbnail-left">
+
+            <img src="../img/venkman.jpg">
+            <h2>{{task.name}}</h2>
+            <p>{{task.description}}</p>
+            <small>{{ task.startDate | date }} | {{ task.startTime | date:'shortTime' }}</small><br/>
+            <small> ${{task.Average}} </small>
+          
+
+      </ion-item>
     </ion-list>
-    <ion-list can-swipe="true" ng-show="tasksAvailable.length == 0">
+    <ion-list can-swipe="true" ng-show="currentUser.availableTasks.length == 0">
       <center>
         <h1>Oops.</h1>
         <p>Seems like there isn't any tasks!</p>
@@ -99,58 +88,6 @@
       <center>
         <h1>Oops.</h1>
         <p>Seems like you do not have any pending tasks!</p>
-      </center>
-    </ion-list>
-  </div>
-
-    <!-- tab for completed tasks -->
-
-  <div ng-if="activeTab==4">
-    <ion-list can-swipe="true" ng-show="tasksAvailable.length != 0" ng-if="task.isCompleted == true">
-       <a href ng-repeat="task in tasksAvailable">
-          <ion-item class="item"> 
-          <h2>{{task.name}}</h2>
-          <p><i>{{task.description}}<i></p>
-          <span>
-            ${{task.Average}}
-          </span>
-          </ion-item>
-        </a>
-    </ion-list>
-
-    <ion-list can-swipe="true" ng-show="tasksAvailable.length == 0">
-      <center>
-        <h1>Hmmm.</h1>
-        <p>Seems like you haven't completed any tasks!</p>
-      </center>
-    </ion-list>
-  </div>
-
-  <!-- tab for rejected tasks -->
-
-  <div ng-if="activeTab==5">
-    <ion-list can-swipe="true" ng-show="tasksAvailable.length != 0" ng-if="task.isRejected == true">
-       <a href ng-repeat="task in tasksAvailable">
-          <div class="item item-divider" ng-if="task.isRejected == true && task.isProposed == true">
-            Proposal
-          </div>
-          <div class="item item-divider" ng-if="task.isRejected == true && task.isProposed == false">
-            Completion
-          </div>
-          <ion-item class="item"> 
-          <h2>{{task.name}}</h2>
-          <p><i>{{task.description}}<i></p>
-          <span>
-            ${{task.Average}}
-          </span>
-          </ion-item>
-        </a>
-    </ion-list>
-
-    <ion-list can-swipe="true" ng-show="tasksAvailable.length == 0">
-      <center>
-        <h1>YAY!</h1>
-        <p>Seems like you do not have any rejected tasks!</p>
       </center>
     </ion-list>
   </div>

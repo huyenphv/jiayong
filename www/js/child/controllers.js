@@ -23,6 +23,19 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
   $scope.tryLogout();
 })
 
+.controller('MyTasksCtrl', function($scope,$window, $state, $ionicLoading) {
+  var config = { cache: false };
+  $scope.activeTab = 1;
+  $scope.changeActiveTab = function(tab){
+    $scope.activeTab = tab;  
+  }
+  $scope.currentUser = JSON.parse($window.localStorage.getItem("luke"));
+    //detail view
+  $scope.detail = function(event){
+      $state.go('menu.tab.view-my-task',{'id' : event.id});
+  };
+})
+
 .controller('ProposeTaskCtrl', function($scope, $stateParams, $window, $ionicLoading) {
   //$scope.chat = Chats.get($stateParams.chatId);
 
@@ -98,7 +111,7 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
 
 })
 
-.controller('MyTasksCtrl', function($scope, $stateParams,$window) {
+.controller('MyProposedTasksCtrl', function($scope, $stateParams,$window) {
   var config = { cache: false };
   $scope.activeTab = 1;
 
@@ -120,25 +133,156 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
 })
 
 
-.controller('ViewTaskCtrl', function($scope, $window) {
+.controller('ViewMyTaskDetailCtrl', function($rootScope, $http, $scope, $ionicActionSheet, $filter,$window, $state, $ionicLoading, $stateParams){
   var config = { cache: false };
   // get individual task according to ID
+  $scope.taskId = $stateParams.id;
 
+  $scope.allTasks = JSON.parse($window.localStorage['tasks']);
+
+  $scope.task = $filter('filter')($scope.allTasks, {id:$scope.taskId})[0];
+
+  $scope.luke = JSON.parse($window.localStorage.getItem("luke"));
+  $scope.daisy = JSON.parse($window.localStorage.getItem("daisy"));
   // take photo and submit task
 
   //take photo
-   $scope.takePhoto = function(){
-
+   $scope.takeUpTask = function(){
+      $scope.task.isAvailable = false;
+      $scope.task.isCompleted = false;
    }
 
-   //complete task isCompleted == true
-   $scope.takePhoto = function(){
+   $scope.openCameraActionSheet = function(){
+        var hideSheet = $ionicActionSheet.show({
+          buttons: [
+            { text: 'Use Camera' },
+            { text: 'Choose Photo' }
+          ],
+          cancelText: 'Cancel',
+          cancel: function() {
+          },
+          buttonClicked: function(index) {
+            var source = 0;
+
+        if (navigator.camera) {
+          if (index == 0) {
+            source = navigator.camera.PictureSourceType.CAMERA;
+          } else if (index == 1) {
+            source = navigator.camera.PictureSourceType.PHOTOLIBRARY || 0;
+          }
+
+          var config = {
+            quality: 75,
+            sourceType: source,
+            encodingType: navigator.camera.EncodingType.PNG,
+            destinationType: navigator.camera.DestinationType.DATA_URL,
+            correctOrientation: true,
+            allowEdit: true,
+            saveToPhotoAlbum: true
+          };
+
+          navigator.camera.getPicture(
+
+            function(imageURI) {
+
+              $scope.task.photos.push(imageURI);
+             
+            }, function(err) {
+              console.err(err);
+            },
+            config);
+        } else {
+          $rootScope.message = 'Unable to access camera. Are you on browser?';
+        }
+
+        return true;
+      }
+    });
+    };
+
+   //show modal 
+    $scope.editPhoto = function(){
+      $scope.copyOfPhotos = $scope.task.photos.slice(0);
+      $scope.modalPhoto.show();
+    };
     
-   }
+    //cancle photo remove 
+    //revert the changes to orignal 
+    $scope.cancelPhotoEdit = function() {
+        $scope.modalPhoto.hide();
+    };
+    //remove the selected photo
+    $scope.removePhoto = function($index){
+      $scope.copyOfPhotos.splice($index,1);
+    };
+    //remove the photo from actual array
+    //reset the copy to blank
+    $scope.donePhotoEdit = function(){
+      $scope.modalPhoto.hide();
+      $scope.task.photos = $scope.copyOfPhotos;
+      $scope.copyOfPhotos = {};
+
+    };
 
    $scope.completeTask = function(){
+      var request = {
+            "appId": 8,
+            "properties": [
+                {"isCompleted": true}
+            ]
+        };
+    $http.put("http://161.202.13.188:9000/api/object/" + $scope.task.id + "/update/properties",JSON.stringify(request),config)
+    .success(function(data, status) {
+       // $scope.allAvailableTasks.push(data);
+       var index = $scope.luke.availableTasks.indexOf(data);
+        $scope.luke.availableTasks.splice(index,1);
+        $scope.luke.completedTasks.push(data);
+        var daisyIndex = $scope.daisy.availableTasks.indexOf(data);
+        $scope.daisy.availableTasks.splice(index,1);
+        $scope.daisy.completedTasks.push(data);
+        $window.localStorage['daisy'] = JSON.stringify($scope.daisy);
+        $window.localStorage['luke'] = JSON.stringify($scope.luke);
+        $http.put("http://161.202.13.188:9000/api/object/871/update/properties",
+        {
+          
+          "appId": 8,
+          "propertyName": 
+            [
+              {"availableTasks": $scope.luke.availableTasks},
+              {"completedTasks": $scope.luke.completedTasks}
+            ]
 
-   }
+        },config)
+      .success(function(response, status) {
+            $http.put("http://161.202.13.188:9000/api/object/873/update/properties",
+            {
+              
+              "appId": 8,
+              "propertyName": 
+                [
+                  {"availableTasks": $scope.luke.availableTasks},
+                  {"completedTasks": $scope.luke.completedTasks}
+                ]
+
+            },config)
+            .success(function(data, status) {
+               $state.go('menu.tab.my-tasks',null,{reload:true});
+            }).error(function(data, status){
+              console.log(data);
+            }).finally(function(){
+              $ionicLoading.hide();
+            });      
+    }).error(function(data, status){
+      console.log(data);
+    }).finally(function(){
+        $ionicLoading.hide();
+    });
+   }).error(function(data, status){
+      console.log(data);
+    }).finally(function(){
+        $ionicLoading.hide();
+    });
+};
 
    // remove the task
    $scope.removeTask = function(){
@@ -148,8 +292,7 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
   $scope.retakeSubmit = function(){
     // retake photos and submit the task for approval again
   }
-
-});
+})
 
 .controller('EditProposalCtrl', function($scope, $window) {
   var config = { cache: false };

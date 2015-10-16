@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('jiaYongApp', ['ionic', 'jiaYongApp.controllers', 'jiaYongApp.services'])
+angular.module('jiaYongApp', ['ionic', 'jiaYongApp.controllers', 'jiaYongApp.services','ngStorage'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -72,25 +72,16 @@ angular.module('jiaYongApp', ['ionic', 'jiaYongApp.controllers', 'jiaYongApp.ser
     }
   })
 
-  // .state('menu.tab.my-tasks', {
-  //   url: '/my-tasks',
-  //   views: {
-  //     'tab-my-tasks': {
-  //       templateUrl: 'templates/tab-my-tasks.html',
-  //       controller: 'MyTasksCtrl'
-  //     }
-  //   }
-  // })
-
-  // .state('menu.tab.my-tasks', {
-  //   url: '/my-tasks',
-  //   views: {
-  //     'tab-my-tasks': {
-  //       templateUrl: 'templates/tab-my-tasks.html',
-  //       controller: 'MyTasksCtrl'
-  //     }
-  //   }
-  // })
+  .state('menu.tab.manage-task', {
+    url: '/manage-task/:id',
+    cache : false,
+    views: {
+        'tab-my-tasks': {
+          templateUrl: 'templates/manage-task.html',
+          controller: 'ManageTaskCtrl'
+        }
+    }
+  })
 
   .state('menu.tab.pending-approval-tasks', {
       url: '/pending-approval-tasks',
@@ -102,6 +93,17 @@ angular.module('jiaYongApp', ['ionic', 'jiaYongApp.controllers', 'jiaYongApp.ser
       }
     })
 
+  .state('menu.tab.pending-approval-task-view', {
+    url: '/pending-approval-task-view/:id',
+    cache : false,
+    views: {
+      'tab-pending-approval-tasks': {
+        templateUrl: 'templates/pending-approval-task-view.html',
+        controller: 'ViewPendingApprovalTaskDetailCtrl'
+      }
+    }
+  })
+  
   .state('menu.tab.profile', {
     url: '/profile',
     views: {

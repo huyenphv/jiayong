@@ -68,7 +68,7 @@
         <!-- assign to -->
         <ion-item class="item item-icon-left item-icon-right " ng-click="showContacts()">
           <i class="icon dark ion-android-contacts"></i>
-          <span ng-hide="task.contacts.length>0" class="fancy">Assign To ...</span>
+          <span class="fancy">Assign To ...</span>
           <select ng-model = "task.assignTo">
             <option ng-repeat = "contact in contacts" value = "{{contact.id}}">{{contact.name}}</option>
           </select>
@@ -78,7 +78,7 @@
       </ion-list>
 
       <div class="padding-vertical">
-        <button type ="submit" ng-disabled="eventForm.$invalid" class="button button-dark button-full">Create Task</button>
+        <button type ="submit" ng-disabled="newTaskForm.$invalid" class="button button-dark button-full">Create Task</button>
       </div>
     </form>
    
