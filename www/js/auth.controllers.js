@@ -96,8 +96,24 @@ angular.module('jiaYongAuth.controllers', [])
       },
       config)
     .success(function(data, status) { 
+      $http.post(
+          address + "/user/create",
+          { 
+            'email': $scope.signupData.email,
+            'name': $scope.signupData.firstname,
+            'password': $scope.signupData.password 
+          },
+          config)
+        .success(function(data, status) { 
+            $window.localStorage['account'] = JSON.stringify(data);
+            $window.location.href = 'jiaYong.html';
+            $ionicLoading.hide();
+          
+        }).error(function(data, status){
+          $ionicLoading.hide();
+          $scope.message = data;
+        });
         $window.localStorage['account'] = JSON.stringify(data);
-        $window.localStorage["availableTasks"] = "[]";
         $window.location.href = 'jiaYong.html';
         $ionicLoading.hide();
       

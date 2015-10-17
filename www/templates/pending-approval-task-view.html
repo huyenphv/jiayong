@@ -15,29 +15,24 @@
 		    <i class="icon ion-information-circled"></i>
 
 		    	<!-- status : In Progress -->
-		    	<div ng-if="(task.isAvailable == false && task.isCompleted == false)">
-		    		In Progress
+		    	<div ng-if="(task.isAvailable == 'false' && task.isCompleted == 'false')">
+		    		Pending
 		    	</div>
 
 		    	<!-- status : Available -->
-		    	<div ng-if="(task.isAvailable == true)">
-		    		Available
-		    	</div>
-
-		    	<!-- status : Completed -->
-		    	<div ng-if="(task.isCompleted == true)">
-		    		Completed
+		    	<div ng-if="(task.isAvailable == 'true')">
+		    		Approved
 		    	</div>
 
 		    	<!-- status : Rejected -->
-		    	<div ng-if="(task.isRejected == true)">
+		    	<div ng-if="(task.isRejected == 'true')">
 		    		Rejected
 		    	</div>
 
 		    	
 		  </div>
 
-		  <div class="item item-icon-left item-text-wrap" ng-if="task.status !='Completed'">
+		  <div class="item item-icon-left item-text-wrap">
 			<label class="item-stacked-label">
         	<span class="input-label">Earnings</span></label>
 		    <div class="col-20">
@@ -52,60 +47,32 @@
 				</table>
 		  </div>
 
-		  <!-- camera function goes here! -->
-		  <div ng-if="task.isAvailable==false && task.isCompleted==false" class="item item-icon-left item-text-wrap">
-		  	<label class="item-stacked-label">
-        	<span class="input-label">Photo(s)</span></label>
-		    <i class="icon ion-images"></i>
-		    	<button class="button button-block button-calm icon-left ion-camera">Take Photo(s)!</button>
+	  	 <div class="item item-icon-left item-text-wrapion">
+	  	 	<i class="icon ion-android-calendar"></i>
+		  	{{ task.startDate | date }} | {{ task.startTime | date:'shortTime' }}
 		  </div>
 
+        <div class="item item-input item-icon-left item-icon-right ">
+          <span class="input-label"><i class="icon ion-email-unread placeholder-icon"></i></span>
+          <input type="text" min="0" class="col col-50" name="rejectMessage" placeholder="Reject Message" ng-model="task.rejectMessage" required></input>
+           <span class="input-label"> 
+            <i ng-show="editProposedTaskForm.rejectMessage.$dirty" class="icon" ng-class="{ 'ion-ios7-close assertive' : editProposedTaskForm.rejectMessage.$invalid , 'ion-ios7-checkmark positive' : editProposedTaskForm.rejectMessage.$valid }"></i>
+          </span>
+         </div>
+
 		  <!-- Send task for approval -->
-		  <div ng-show="task.isAvailable == false && task.isCompleted == false">
-		  <center>
-		  	<button class="button button-block button-balanced" type="button" ng-click="completeTask()" >
-		  		Complete Task!
+		  <div class = "row" ng-show="task.isApproved == 'false'">
+		  
+		  	<button class="col col-33 button button-balanced" type="button" ng-click="approveTask()" >
+		  		Approve Task
 		  	</button>
-		  	<button class="button button-assertive" type="button" ng-click="removeTask()" >
-		  		Remove Task!
+		  	<button class="col col-33 button button-positive" type="button" ng-click="updateTask(task)" >
+		  		Counter Propose
 		  	</button>
-		  </center>
+		  	<button class="col col-33 button button-assertive" type="button" ng-click="rejectTask()" >
+		  		Reject
+		  	</button>
 		</div>
-
-		<!-- Rejected Task -->
-		  <div ng-show="task.isRejected == true">
-		  <center>
-		  	<button class="button button-balanced" type="button" ng-click="retakeSubmit()" >
-		  		Re-Take Photos!
-		  	</button>
-		  	<button class="button button-assertive" type="button" ng-click="removeTask()" >
-		  		Remove Task!
-		  	</button>
-		  </center>
-		</div>
-
-
-		<!-- Take up Task -->
-		  <div ng-show="task.isAvailable == true">
-		  <center>
-		  	<button class="button button-block button-balanced" type="button" ng-click="takeUpTask()" >
-		  		Take Up Task!
-		  	</button>
-		  </center>
-		</div>
-
-		<!-- Rejected Proposal -->
-		  <div ng-show="task.isRejected == true && task.isProposed == true">
-		  <center>
-		  	<button class="button button-balanced" type="button" ui-sref="menu.tab.my-tasks.editProposal" >
-		  		Edit Proposal!
-		  	</button>
-		  	<button class="button button-assertive" type="button" ng-click="removeTask()" >
-		  		Remove Task!
-		  	</button>
-		  </center>
-		</div>
-
 
   </ion-content>
 </ion-view>

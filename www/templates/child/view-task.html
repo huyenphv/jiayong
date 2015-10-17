@@ -14,29 +14,29 @@
 		    <i class="icon ion-information-circled"></i>
 
 		    	<!-- status : In Progress -->
-		    	<div ng-if="(task.isAvailable == false && task.isCompleted == false)">
+		    	<div ng-if="(task.isAvailable == 'false' &&  task.isCompleted == 'false')">
 		    		In Progress
 		    	</div>
 
 		    	<!-- status : Available -->
-		    	<div ng-if="(task.isAvailable == true)">
+		    	<div ng-if="(task.isAvailable == 'true')">
 		    		Available
 		    	</div>
 
 		    	<!-- status : Completed -->
-		    	<div ng-if="(task.isCompleted == true)">
+		    	<div ng-if="(task.isCompleted == 'true')">
 		    		Completed
 		    	</div>
 
 		    	<!-- status : Rejected -->
-		    	<div ng-if="(task.isRejected == true)">
+		    	<div ng-if="(task.isRejected == 'true')">
 		    		Rejected
 		    	</div>
 
 		    	
 		  </div>
 
-		  <div class="item item-icon-left item-text-wrap" ng-if="task.status !='Completed'">
+		  <div class="item item-icon-left item-text-wrap" ng-if="task.isCompleted == 'false'">
 			<label class="item-stacked-label">
         	<span class="input-label">Earnings</span></label>
 		    <div class="col-20">
@@ -50,9 +50,29 @@
 				</tr>
 				</table>
 		  </div>
+  		  <div class="item item-icon-left item-text-wrap" ng-if="task.isCompleted == 'true'">
+			<label class="item-stacked-label">
+        	<span class="input-label">Earnings</span></label>
+		    <div class="col-20">
+		    	<i class="icon ion-cash"></i>
+			</div> 
+			<table>
+				<tr>
+					<td class="padding-right"> ${{task.reward}}</td>
+				</tr>
+				</table>
+		  </div>
+
+		  <div class="item item-icon-left item-text-wrap" ng-show = "task.isRejected == 'true' && task.isProposed == 'false'">
+		  	<label class="item-stacked-label">
+        	<span class="input-label"><i class="icon ion-android-image"></i></span></label>
+		    
+    		<img  my-src ng-repeat="photo in event.photos track by photo.id" photo="photo.image" data-size="org" class="full-image"/>
+    		<img  src= "img/venkman.jpg" data-size="org" class="full-image"/>
+		  </div>
 
 	        <!-- task photos -->
-	        <ion-item ng-if="task.isAvailable==false && task.isCompleted==false" class="item item-icon-left item-icon-right " ng-click="openCameraActionSheet()">
+	        <ion-item ng-if="task.isAvailable=='false' && task.isCompleted== 'false' || task.isRejected == 'true'" class="item item-icon-left item-icon-right " ng-click="openCameraActionSheet()">
 	            <i class="icon icon-left ion-camera"></i>
 	            <span ng-hide="task.photos.length>0" class="fancy">Tap to select some photos..</span>
 	            <span ng-show="task.photos.length>0" class="fancy">Select more ?</span>
@@ -63,7 +83,7 @@
 	           </div>
 	        </div>
 		  <!-- Send task for approval -->
-		  <div ng-show="task.isAvailable == false && task.isCompleted == false">
+		  <div ng-show="task.isAvailable == 'false' && task.isCompleted == 'false'">
 		  
 		  	<div class = "row">
 			  	<button class="col col-50 button button-block button-balanced" type="button" ng-click="completeTask()" >
@@ -77,20 +97,17 @@
 		</div>
 
 		<!-- Rejected Task -->
-		  <div ng-show="task.isRejected == true">
+		  <div ng-show="task.isRejected == 'true'">
 		  <center>
-		  	<button class="button button-balanced" type="button" ng-click="retakeSubmit()" >
-		  		Re-Take Photos!
-		  	</button>
-		  	<button class="button button-assertive" type="button" ng-click="removeTask()" >
-		  		Remove Task!
+		  	<button class="button button-balanced" type="button" ng-click="redoTask()" >
+		  		Re-do Task
 		  	</button>
 		  </center>
 		</div>
 
 
 		<!-- Take up Task -->
-		  <div ng-show="task.isAvailable == true">
+		  <div ng-show="task.isAvailable == 'true' && task.isCompleted == 'false'">
 		  <center>
 		  	<button class="button button-block button-balanced" type="button" ng-click="takeUpTask()" >
 		  		Take Up Task!
@@ -99,7 +116,7 @@
 		</div>
 
 		<!-- Rejected Proposal -->
-		  <div ng-show="task.isRejected == true && task.isProposed == true">
+		  <div ng-show="task.isRejected == 'true' && task.isProposed == 'true'">
 		  <center>
 		  	<button class="button button-balanced" type="button" ui-sref="menu.tab.my-tasks.editProposal" >
 		  		Edit Proposal!

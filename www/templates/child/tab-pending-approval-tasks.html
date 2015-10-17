@@ -15,16 +15,50 @@
     <button class="button button-icon button-clear button-dark ion-ios-plus-outline" ui-sref="menu.tab.propose-task"></button>
   </ion-nav-buttons>
   <ion-content class="has-header">
+  <div class="has-header" ng-if="activeTab==1">
     <ion-list can-swipe="true" ng-show="currentUser.proposedTasks.length != 0">
-        <ion-item class="item" ng-click="detail(task)" ng-repeat="task in currentUser.proposedTasks ">
+      <ion-item ng-repeat="task in currentUser.proposedTasks | filter: {isPending : 'true'}" ng-click = "viewPending(task)">
+          <a class="item item-thumbnail-left">
+            <img src="../img/venkman.jpg">
             <h2>{{task.name}}</h2>
-        </ion-item>
+            <p>{{task.description}}</p>
+            <small>{{ task.startDate | date }} | {{ task.startTime | date:'shortTime' }}</small><br/>
+            <small> ${{task.Average}} </small>
+          </a>
+
+      </ion-item>
     </ion-list>
     <ion-list can-swipe="true" ng-show="currentUser.proposedTasks.length == 0">
       <center>
         <h1>Oops.</h1>
-        <p>Seems like there is no new proposed task!</p>
+        <p>Seems like there isn't any pending approval tasks !</p>
+        <button class="button button-balanced" type="button"  ui-sref="menu.tab.propose-task">Propose Task!</button>
       </center>
     </ion-list>
+  </div>
+  
+<!-- tab for in progress tasks -->
+
+  <div class="has-header" ng-if="activeTab==2">
+    <ion-list can-swipe="true" ng-show="currentUser.proposedTasks.length != 0">
+      <ion-item ng-repeat="task in currentUser.proposedTasks | filter: {  isApprovedProposed : 'false'} && {isPending : false}" ng-click = "viewRejected(task)">
+          <a class="item item-thumbnail-left">
+            <img src="../img/venkman.jpg">
+            <h2>{{task.name}}</h2>
+            <p>{{task.description}}</p>
+            <small>{{ task.startDate | date }} | {{ task.startTime | date:'shortTime' }}</small><br/>
+            <small> ${{task.Average}} </small>
+          </a>
+
+      </ion-item>
+    </ion-list>
+    <ion-list can-swipe="true" ng-show="currentUser.proposedTasks.length == 0">
+      <center>
+        <h1>Oops.</h1>
+        <p>Seems like there isn't any rejected tasks!</p>
+        <button class="button button-balanced" type="button"  ui-sref="menu.tab.propose-task">Propose Task!</button>
+      </center>
+    </ion-list>
+  </div>
   </ion-content>
 </ion-view>

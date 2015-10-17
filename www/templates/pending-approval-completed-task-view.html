@@ -20,7 +20,11 @@
         <ion-item class="item item-icon-left item-icon-right " ng-click="showContacts()">
           <i class="icon dark ion-cash"></i>
           <span class="fancy">Reward ...</span>
-          <span> {{task.reward}}
+          <select ng-model = "task.reward">
+            <option value = "{{task.Average}}">Average ({{task.Average}})</option>
+            <option value = "{{task.Average}}">Good ({{task.Good}})</option>
+            <option value = "{{task.Average}}">Exellent ({{task.Excellent}})</option>
+          </select>
           </span>
         </ion-item>
 
@@ -29,6 +33,16 @@
 		  	{{ task.startDate | date }} | {{ task.startTime | date:'shortTime' }}
 		  </div>
 
+		  <!-- Send task for approval -->
+		  <div class = "row">
+		  
+		  	<button class="col col-50 button button-balanced" type="button" ng-click="approveTask()" >
+		  		Approve Task
+		  	</button>
+		  	<button class="col col-50 button button-assertive" type="button" ng-click="rejectTask()" >
+		  		Reject
+		  	</button>
+		</div>
 
   </ion-content>
 </ion-view>

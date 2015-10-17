@@ -76,11 +76,35 @@ angular.module('jiaYongAppChild', ['ionic', 'jiaYongAppChild.controllers', 'jiaY
 
  .state('menu.tab.propose-task', {
     url: '/propose-task',
+    cache : false,
     views: {
         'tab-propose-task': {
           templateUrl: 'templates/child/propose-task.html',
           controller: 'ProposeTaskCtrl'
         }
+    }
+  })
+
+  .state('menu.tab.edit-proposed-task', {
+    url: '/edit-proposed-task/:id',
+    cache : false,
+    views: {
+        'tab-propose-task': {
+          templateUrl: 'templates/child/edit-proposed-task.html',
+          controller: 'EditProposalCtrl'
+        }
+    }
+  })
+
+  // to view the task detail by id
+  .state('menu.tab.view-pending-proposed-task', {
+    url:'/pending-proposed/:id',
+    cache: false,
+    views: {
+      'tab-propose-task':{
+        templateUrl: 'templates/child/view-pending-task.html',
+        controller: 'ViewMyProposedTaskDetailCtrl'
+      }
     }
   })
 
@@ -115,6 +139,7 @@ angular.module('jiaYongAppChild', ['ionic', 'jiaYongAppChild.controllers', 'jiaY
 
   .state('menu.tab.profile', {
     url: '/profile',
+    cache : false,
     views: {
       'tab-profile': {
         templateUrl: 'templates/child/profile.html',

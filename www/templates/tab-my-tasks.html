@@ -4,6 +4,7 @@
                 <a class="button button-clear button-dark " ng-class="{'active' : activeTab == 1}" ng-click = "changeActiveTab(1)" >Available</a>
                 <a class="button button-clear button-dark "  ng-class="{'active' : activeTab == 2}" ng-click = "changeActiveTab(2)" >In Progress</a>
                 <a class="button button-clear button-dark " ng-class="{'active' : activeTab == 3}" ng-click = "changeActiveTab(3)" >Completed</a>
+                <a class="button button-clear button-dark "  ng-class="{'active' : activeTab == 4}" ng-click = "changeActiveTab(4)" >Pending</a>
 
             </div>
         </div>
@@ -25,7 +26,7 @@
 
   <div class="has-header" ng-if="activeTab==1">
     <ion-list can-swipe="true" ng-show="currentUser.availableTasks.length != 0">
-      <ion-item ng-repeat="task in currentUser.availableTasks" ng-click = "detail(task)">
+      <ion-item ng-repeat="task in currentUser.availableTasks | filter: {isAvailable : 'true'}" ng-click = "detail(task)">
 
            <a class="item item-thumbnail-left">
             <img src="../img/venkman.jpg">
@@ -41,7 +42,7 @@
       <center>
         <h1>Oops.</h1>
         <p>Seems like there isn't any tasks!</p>
-        <button class="button button-balanced" type="button"  ui-sref="menu.tab.create-task">Propose Task!</button>
+        <button class="button button-balanced" type="button"  ui-sref="menu.tab.create-task">Create Task!</button>
       </center>
     </ion-list>
   </div>
@@ -52,7 +53,7 @@
  
  <div ng-if="activeTab==2">
     <ion-list can-swipe="true" ng-show="currentUser.availableTasks.length != 0" >
-       <ion-item ng-repeat="task in currentUser.availableTasks | filter : {isAvailable : false} " ng-click = "detail(task)" >
+       <ion-item ng-repeat="task in currentUser.availableTasks | filter : {isAvailable : 'false'} " ng-click = "detail(task)" >
 
            <a class="item item-thumbnail-left">
             <img src="../img/venkman.jpg">
@@ -68,7 +69,7 @@
       <center>
         <h1>Oops.</h1>
         <p>Seems like you do not have any tasks In Progress!!</p>
-        <button class="button button-balanced" type="button"  ui-sref="menu.tab.propose-task">Propose Task!</button>
+        <button class="button button-balanced" type="button"  ui-sref="menu.tab.create-task">Create Task!</button>
       </center>
     </ion-list>
   </div>
@@ -77,7 +78,7 @@
 
   <div ng-if="activeTab==3">
     <ion-list can-swipe="true" ng-show="currentUser.completedTasks != 0">
-       <ion-item ng-repeat="task in currentUser.completedTasks" ng-click = "detail(task)">
+       <ion-item ng-repeat="task in currentUser.completedTasks | filter:{isApproved : 'true'}" ng-click = "viewPendingApprovalForCompletedTask(task)">
 
            <a class="item item-thumbnail-left">
             <img src="../img/venkman.jpg">
@@ -89,13 +90,35 @@
 
       </ion-item>
     </ion-list>
-    <ion-list can-swipe="true" ng-show="tasksAvailable.length == 0">
+    <ion-list can-swipe="true" ng-show="currentUser.completedTasks == 0">
+      <center>
+        <h1>Oops.</h1>
+        <p>Seems like you do not have any completed tasks!</p>
+      </center>
+    </ion-list>
+  </div>
+  <!-- tab for pending approval tasks -->
+
+  <div ng-if="activeTab==4">
+    <ion-list can-swipe="true" ng-show="currentUser.completedTasks != 0">
+       <ion-item ng-repeat="task in currentUser.completedTasks | filter: {isApproved : 'false'}" ng-click = "viewPendingApprovalForCompletedTask(task)">
+
+           <a class="item item-thumbnail-left">
+            <img src="../img/venkman.jpg">
+            <h2>{{task.name}}</h2>
+            <p>{{task.description}}</p>
+            <small>{{ task.startDate | date }} | {{ task.startTime | date:'shortTime' }}</small><br/>
+            <small> ${{task.Average}} </small>
+          </a>
+
+      </ion-item>
+    </ion-list>
+    <ion-list can-swipe="true" ng-show="currentUser.completedTasks.length == 0">
       <center>
         <h1>Oops.</h1>
         <p>Seems like you do not have any pending tasks!</p>
       </center>
     </ion-list>
   </div>
-
 </ion-content>
 </ion-view>
