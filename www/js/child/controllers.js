@@ -23,9 +23,19 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
   $scope.tryLogout();
 })
 
-.controller('MyTasksCtrl', function($scope, $state, $window, $http,$ionicLoading, $rootScope) {
+.controller('MyTasksCtrl', function($scope, $state, $ionicPopup, $window, $http,$ionicLoading, $rootScope) {
   var config = { cache: false };
   $scope.activeTab = 1;
+  $scope.refresh = function(){
+   var alertPopup = $ionicPopup.alert({
+     title: 'New Notification',
+     template: '<center>A new change has been made! Refreshing the application...</center>'
+   });
+   alertPopup.then(function(res) {
+     $scope.$broadcast('scroll.refreshComplete');
+   });
+    
+  }
   $scope.changeActiveTab = function(tab){
     $scope.activeTab = tab;  
   }
@@ -38,9 +48,13 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
   $scope.viewCompleted = function(task){
       $state.go('menu.tab.view-my-task',{'id' : task.id});
   }
+
+  $scope.viewRejected = function(task){
+      $state.go('menu.tab.view-my-task',{'id' : task.id});
+  }
 })
 
-.controller('ProposeTaskCtrl', function($scope, $state, $window, $http,$ionicLoading, $rootScope) {
+.controller('ProposeTaskCtrl', function($scope, $state, $ionicPopup, $window, $http,$ionicLoading, $rootScope) {
   //$scope.chat = Chats.get($stateParams.chatId);
 
   // to propose a task, idk is this correct though lol
@@ -172,9 +186,10 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
             {isCompleted: "false"},
             {isProposed: "true"},
             {isApproved: "false"},
-            {isApprovedPropose: "false"},
+            {isApprovedProposed: "false"},
             {isRejected: "false"},
             {rejectedMessage: ""},
+            {reward: 0},
             {isPending: "true"},
             {photos: []},
             {assignTo: $scope.task.assignTo}
@@ -220,9 +235,21 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
 
 })
 
-.controller('MyProposedTasksCtrl', function($scope, $stateParams,$window, $state) {
+.controller('MyProposedTasksCtrl', function($scope, $ionicPopup, $stateParams,$ionicLoading, $window, $state) {
   var config = { cache: false };
   $scope.activeTab = 1;
+
+  $scope.refresh = function(){
+
+   var alertPopup = $ionicPopup.alert({
+     title: 'New Notification',
+     template: '<center>A new change has been made! Refreshing the application...</center>'
+   });
+   alertPopup.then(function(res) {
+     $scope.$broadcast('scroll.refreshComplete');
+   });
+    
+  }
 
   $scope.changeActiveTab = function(tab){
     $scope.activeTab = tab;  
@@ -252,17 +279,20 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
       $state.go('menu.tab.edit-proposed-task',{'id' : $scope.task.id});
   }
   $scope.acceptProposal = function() {
+      $ionicLoading.show({
+        template: '<i class="icon ion-loading-c"></i> Accepting proposed task..'
+      });
       var request = {
-          "appId": 8,
-          "properties": [
-              {"isApprovedProposed": "true"},
-              {"isAvailable": "true"},
-              {"isRejected": "false"},
-              {"isPending": "false"}
+          appId: 8,
+          properties: [
+              {isApprovedProposed: "true"},
+              {isAvailable: "true"},
+              {isRejected: "false"},
+              {isPending: "false"}
           ]
       };
 
-    $http.put("http://161.202.13.188:9000/api/object/" + $scope.task.id + "/update/properties",request,config)
+    $http.put("http://161.202.13.188:9000/api/object/" + $scope.task.id + "/update/properties",JSON.stringify(request),config)
     .success(function(data, status) {
        // $scope.allAvailableTasks.push(data);
        // var index = $scope.luke.proposedTasks.indexOf(data);
@@ -346,13 +376,24 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
   };
 })
 
-.controller('ProfileCtrl', function($scope, $window) {
+.controller('ProfileCtrl', function($scope, $window, $ionicPopup) {
   var config = { cache: false };
   $scope.currentUser = JSON.parse($window.localStorage.getItem("luke"));
+  $scope.refresh = function(){
+
+   var alertPopup = $ionicPopup.alert({
+     title: 'New Notification',
+     template: '<center>A new change has been made! Refreshing the application...</center>'
+   });
+   alertPopup.then(function(res) {
+     $scope.$broadcast('scroll.refreshComplete');
+   });
+    
+  }
 })
 
 
-.controller('ViewMyTaskDetailCtrl', function($rootScope, $http, $scope, $ionicActionSheet, $filter,$window, $state, $ionicLoading, $stateParams){
+.controller('ViewMyTaskDetailCtrl', function($rootScope, $ionicPopup, $http, $cordovaCamera, $scope, $ionicActionSheet, $filter,$window, $state, $ionicLoading, $stateParams){
   var config = { cache: false };
   // get individual task according to ID
   $scope.taskId = $stateParams.id;
@@ -369,43 +410,72 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
       $scope.allTasks = JSON.parse($window.localStorage['luke']).completedTasks;
       console.log($scope.allTasks);
       $scope.task = $filter('filter')($scope.allTasks, {id:$scope.taskId})[0];
+      if (typeof $scope.task === "undefined") 
+      {
+        $scope.allTasks = JSON.parse($window.localStorage['luke']).rejectedTasks;
+        console.log($scope.allTasks);
+        $scope.task = $filter('filter')($scope.allTasks, {id:$scope.taskId})[0];
+      }
       
   }
-  // take photo and submit task
+  // var today = new Date();
+  // var taskStartDate = new Date("2006/01/01");
+  // alert(taskStartDate);
 
   //take photo
    $scope.takeUpTask = function(){
-      console.log($scope.task.isAvailable);
-      var request = {
-            "appId": 8,
-            "properties": [
-                {"isAvailable": "false"}
-            ]
-        };
-
-    $http.put("http://161.202.13.188:9000/api/object/" + $scope.task.id + "/update/properties",request,config)
-    .success(function(data, status) {
-        $http.get(
-          "http://161.202.13.188:9000/api/object/get/app/8/objecttype/34",config)
-        .success(function(data, status) { 
-            $window.localStorage['users'] = JSON.stringify(data);
-            $window.localStorage['daisy'] = JSON.stringify(data[0]);
-            // $window.localStorage['avail'] = JSON.stringify(data[0].availabTasks);
-            $window.localStorage['luke'] = JSON.stringify(data[2]);
-            $state.go('menu.tab.my-tasks',{},{reload:true});
-        }).error(function(data, status){
-          $ionicLoading.hide();
-          $scope.message = data;
-        }).finally(function(){
-        $ionicLoading.hide();
-    });
+      var year = $scope.task.startDate.substr($scope.task.startDate.length - 4,4);
+      var month = $scope.task.startDate.substr(3,2);
+      var date = $scope.task.startDate.substr(0,2);
+      var hour = $scope.task.startTime.substr(0,2);
+      var min = $scope.task.startTime.substr(3,2);
+      var date = new Date(year,month,date,hour,min);
+      if(date > new Date()){
+        var alertPopup = $ionicPopup.alert({
+           title: 'Error',
+           template: '<center>Cannot take up a task in a future date!</center>'
+         });
+         alertPopup.then(function(res) {
+           $scope.$broadcast('scroll.refreshComplete');
+         });
+      }else
+      {
         
-   }).error(function(data, status){
-      console.log(data);
-    }).finally(function(){
-        $ionicLoading.hide();
-    });
-   }
+        $ionicLoading.show({
+          template: '<i class="icon ion-loading-c"></i> Tasking up task..'
+        });
+        console.log($scope.task.isAvailable);
+        var request = {
+              appId: 8,
+              properties: [
+                  {isAvailable: "false"}
+              ]
+          };
+
+        $http.put("http://161.202.13.188:9000/api/object/" + $scope.task.id + "/update/properties",JSON.stringify(request),config)
+        .success(function(data, status) {
+          $http.get(
+            "http://161.202.13.188:9000/api/object/get/app/8/objecttype/34",config)
+          .success(function(data, status) { 
+              $window.localStorage['users'] = JSON.stringify(data);
+              $window.localStorage['daisy'] = JSON.stringify(data[0]);
+              // $window.localStorage['avail'] = JSON.stringify(data[0].availabTasks);
+              $window.localStorage['luke'] = JSON.stringify(data[2]);
+              $state.go('menu.tab.my-tasks',{},{reload:true});
+          }).error(function(data, status){
+            $ionicLoading.hide();
+            $scope.message = data;
+          }).finally(function(){
+          $ionicLoading.hide();
+      });
+          
+     }).error(function(data, status){
+        console.log(data);
+      }).finally(function(){
+          $ionicLoading.hide();
+      });
+    }
+   };
 
    $scope.openCameraActionSheet = function(){
         var hideSheet = $ionicActionSheet.show({
@@ -441,6 +511,7 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
             function(imageURI) {
 
               $scope.task.photos.push(imageURI);
+              alert(imageURI);
              
             }, function(err) {
               console.err(err);
@@ -480,14 +551,17 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
     };
 
    $scope.completeTask = function(){
+      $ionicLoading.show({
+        template: '<i class="icon ion-loading-c"></i> Completing task..'
+      });
       var request = {
-            "appId": 8,
-            "properties": [
-                {"isCompleted": "true"}
+            appId: 8,
+            properties: [
+                {isCompleted: "true"}
             ]
         };
         $scope.task.isAvailable = "false";
-    $http.put("http://161.202.13.188:9000/api/object/" + $scope.task.id + "/update/properties",request,config)
+    $http.put("http://161.202.13.188:9000/api/object/" + $scope.task.id + "/update/properties",JSON.stringify(request),config)
     .success(function(data, status) {
        // $scope.allAvailableTasks.push(data);
         $scope.luke = JSON.parse($window.localStorage.getItem("luke"));
@@ -524,7 +598,7 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
               {"isParent": true},
               {"availableTasks": $scope.daisy.availableTasks},
               {"completedTasks": $scope.daisy.completedTasks},
-              {"completedTasks": $scope.daisy.rejectedTasks},
+              {"rejectedTasks": $scope.daisy.rejectedTasks},
               {"proposedTasks": $scope.daisy.proposedTasks}
             ]
           }
@@ -546,7 +620,7 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
               {"isParent": false},
               {"availableTasks": $scope.luke.availableTasks},
               {"completedTasks": $scope.luke.completedTasks},
-              {"completedTasks": $scope.luke.rejectedTasks},
+              {"rejectedTasks": $scope.luke.rejectedTasks},
               {"proposedTasks": $scope.luke.proposedTasks}
             ]
           }
@@ -573,14 +647,19 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
 
   $scope.redoTask = function(){
     // retake photos and submit the task for approval again
+    $ionicLoading.show({
+      template: '<i class="icon ion-loading-c"></i> Updating task..'
+    });
     var request = {
-        "appId": 8,
-        "properties": [
-            {"isCompleted": "false"},
-            {"isAvailable": "false"},
+        appId: 8,
+        properties: [
+            {isCompleted: "false"},
+            {isAvailable: "false"},
+            {isRejected: "false"},
+            {rejectedMessage: ""}
         ]
     };
-    $http.put("http://161.202.13.188:9000/api/object/" + $scope.task.id + "/update/properties",request,config)
+    $http.put("http://161.202.13.188:9000/api/object/" + $scope.task.id + "/update/properties",JSON.stringify(request),config)
     .success(function(data, status) {
        // $scope.allAvailableTasks.push(data);
         $scope.luke = JSON.parse($window.localStorage.getItem("luke"));
@@ -617,7 +696,7 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
               {"isParent": true},
               {"availableTasks": $scope.daisy.availableTasks},
               {"completedTasks": $scope.daisy.completedTasks},
-              {"completedTasks": $scope.daisy.rejectedTasks},
+              {"rejectedTasks": $scope.daisy.rejectedTasks},
               {"proposedTasks": $scope.daisy.proposedTasks}
             ]
           }
@@ -639,7 +718,7 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
               {"isParent": false},
               {"availableTasks": $scope.luke.availableTasks},
               {"completedTasks": $scope.luke.completedTasks},
-              {"completedTasks": $scope.luke.rejectedTasks},
+              {"rejectedTasks": $scope.luke.rejectedTasks},
               {"proposedTasks": $scope.luke.proposedTasks}
             ]
           }
@@ -706,6 +785,10 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
             {isCompleted: "false"},
             {isProposed: "true"},
             {isApproved: "false"},
+            {isApprovedProposed: "false"},
+            {isRejected: "false"},
+            {rejectedMessage: ""},
+            {reward: 0},
             {isPending: "true"},
             {photos: []},
             {assignTo: $scope.task.assignTo}

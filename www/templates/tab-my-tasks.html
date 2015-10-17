@@ -19,9 +19,9 @@
     <button class="button button-icon button-clear button-dark ion-ios-plus-outline" ui-sref="menu.tab.create-task"></button>
  </ion-nav-buttons>
   
-
+ 
   <ion-content>
-
+    <ion-refresher pulling-text="Pull to refresh" on-refresh="refresh()"></ion-refresher>
   <!-- tab for available tasks -->
 
   <div class="has-header" ng-if="activeTab==1">
@@ -53,7 +53,7 @@
  
  <div ng-if="activeTab==2">
     <ion-list can-swipe="true" ng-show="currentUser.availableTasks.length != 0" >
-       <ion-item ng-repeat="task in currentUser.availableTasks | filter : {isAvailable : 'false'} " ng-click = "detail(task)" >
+       <ion-item ng-repeat="task in currentUser.availableTasks | filter : {isAvailable : 'false'} " ng-click = "viewPendingApprovalForCompletedTask(task)" >
 
            <a class="item item-thumbnail-left">
             <img src="../img/venkman.jpg">
@@ -120,5 +120,7 @@
       </center>
     </ion-list>
   </div>
+
+    
 </ion-content>
 </ion-view>

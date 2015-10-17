@@ -19,7 +19,7 @@
   <ion-content>
 
   <!-- tab for available tasks -->
-
+    <ion-refresher pulling-text="Pull to refresh" on-refresh="refresh()"></ion-refresher>
   <div class="has-header" ng-if="activeTab==1">
     <ion-list can-swipe="true" ng-show="currentUser.availableTasks.length != 0">
       <ion-item ng-repeat="task in currentUser.availableTasks | filter:{isAvailable : 'true'}" ng-click = "detail(task)">
@@ -70,7 +70,7 @@
 
   <div class="has-header" ng-if="activeTab==3">
     <ion-list can-swipe="true" ng-show="currentUser.completedTasks.length != 0">
-      <ion-item ng-repeat="task in currentUser.completedTasks" ng-click = "viewCompleted(task)">
+      <ion-item ng-repeat="task in currentUser.completedTasks | filter: {isRejected:'false'}" ng-click = "viewCompleted(task)">
           <a class="item item-thumbnail-left">
             <img src="../img/venkman.jpg">
             <h2>{{task.name}}</h2>
@@ -94,7 +94,7 @@
 
   <div class="has-header" ng-if="activeTab==4">
     <ion-list can-swipe="true" ng-show="currentUser.rejectedTasks.length != 0">
-      <ion-item ng-repeat="task in currentUser.rejectedTasks | filter: {isProposed : 'false'}" ng-click = "detail(task)">
+      <ion-item ng-repeat="task in currentUser.rejectedTasks | filter: {isProposed : 'false'}" ng-click = "viewRejected(task)">
           <a class="item item-thumbnail-left">
             <img src="../img/venkman.jpg">
             <h2>{{task.name}}</h2>

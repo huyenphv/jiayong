@@ -36,6 +36,11 @@
 		    	
 		  </div>
 
+		  	<div class="item item-icon-left item-text-wrapion">
+		  	 	<i class="icon ion-android-calendar"></i>
+			  	{{ task.startDate | date }} | {{ task.startTime | date:'shortTime' }}
+			</div>
+
 		  <div class="item item-icon-left item-text-wrap" ng-if="task.isCompleted == 'false'">
 			<label class="item-stacked-label">
         	<span class="input-label">Earnings</span></label>
@@ -72,37 +77,43 @@
 		  </div>
 
 	        <!-- task photos -->
-	        <ion-item ng-if="task.isAvailable=='false' && task.isCompleted== 'false' || task.isRejected == 'true'" class="item item-icon-left item-icon-right " ng-click="openCameraActionSheet()">
+	        <ion-item ng-if="task.isAvailable=='false' && task.isCompleted== 'false' && task.isRejected == 'false'" class="item item-icon-left item-icon-right " ng-click="openCameraActionSheet()">
 	            <i class="icon icon-left ion-camera"></i>
 	            <span ng-hide="task.photos.length>0" class="fancy">Tap to select some photos..</span>
 	            <span ng-show="task.photos.length>0" class="fancy">Select more ?</span>
 	        </ion-item>
+	        
 	        <div class="row">
 	           <div  ng-repeat="photo in task.photos" class="col col-25 item item-image" ng-click="editPhoto()">
 	            <img ng-src={{"data:image/jpeg;base64,"+photo}}>
 	           </div>
 	        </div>
+
+			<div class="item item-icon-left item-text-wrap" ng-show = "task.isRejected == 'true'">
+				<i class="icon ion-email-unread"></i>
+				<span>{{task.rejectedMessage}}</span>
+			</div>
 		  <!-- Send task for approval -->
-		  <div ng-show="task.isAvailable == 'false' && task.isCompleted == 'false'">
+		  <div ng-show="task.isAvailable == 'false' && task.isCompleted == 'false' && task.isRejected == 'false'">
 		  
 		  	<div class = "row">
 			  	<button class="col col-50 button button-block button-balanced" type="button" ng-click="completeTask()" >
-			  		Complete Task!
+			  		Complete Task
 			  	</button>
-			  	<button class="col col-50 button button-block button-assertive" type="button" ng-click="removeTask()" >
-			  		Withdraw Task!
+			  	<button class="col col-50 button button-block button-assertive" type="button" ui-sref="menu.tab.my-tasks" >
+			  		Close
 			  	</button>
 		  	</div>
 		  
 		</div>
 
 		<!-- Rejected Task -->
-		  <div ng-show="task.isRejected == 'true'">
-		  <center>
-		  	<button class="button button-balanced" type="button" ng-click="redoTask()" >
-		  		Re-do Task
-		  	</button>
-		  </center>
+		  <div ng-show="task.isRejected == 'true' && task.isProposed == 'false'">
+			  <center>
+			  	<button class="button button-balanced" type="button" ng-click="redoTask()" >
+			  		Re-do Task
+			  	</button>
+			  </center>
 		</div>
 
 
@@ -116,13 +127,13 @@
 		</div>
 
 		<!-- Rejected Proposal -->
-		  <div ng-show="task.isRejected == 'true' && task.isProposed == 'true'">
+		  <div ng-show="task.isRejected == 'true' && task.isProposed == 'true' && task.isAvailable == 'false'">
 		  <center>
 		  	<button class="button button-balanced" type="button" ui-sref="menu.tab.my-tasks.editProposal" >
-		  		Edit Proposal!
+		  		Edit Proposal
 		  	</button>
 		  	<button class="button button-assertive" type="button" ng-click="removeTask()" >
-		  		Remove Task!
+		  		Remove Task
 		  	</button>
 		  </center>
 		</div>

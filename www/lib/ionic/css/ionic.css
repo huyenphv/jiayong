@@ -7695,3 +7695,8 @@ a.button {
   opacity: 0;
   -webkit-transition-duration: 0s;
   transition-duration: 0s; }
+
+/*.bottom-noti {
+    position: fixed;
+    background-color: transparent !important;
+}*/

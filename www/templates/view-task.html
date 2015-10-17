@@ -12,12 +12,12 @@
 		  	<label class="item-stacked-label">
         	<span class="input-label"><i class="icon ion-android-image"></i></span></label>
 		    
-    		<img  my-src ng-repeat="photo in event.photos track by photo.id" photo="photo.image" data-size="org" class="full-image"/>
+    		<img  my-src ng-repeat="photo in task.photos" photo="photo" data-size="org" class="full-image"/>
     		<img  src= "img/venkman.jpg" data-size="org" class="full-image"/>
 		  </div>
 
         <!-- assign to -->
-        <ion-item class="item item-icon-left item-icon-right " ng-click="showContacts()">
+        <ion-item class="item item-icon-left item-icon-right ">
           <i class="icon dark ion-cash"></i>
           <span class="fancy">Reward ...</span>
           <span> {{task.reward}}

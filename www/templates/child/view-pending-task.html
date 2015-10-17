@@ -47,7 +47,12 @@
             {{submitToUser.name}}
           </span>
         </ion-item>
-		 <div ng-show="task.isRejected == 'true' && task.isPending == 'false'">
+
+		<div class="item item-icon-left item-text-wrap" ng-show = "task.isRejected == 'true' && task.isApprovedProposed == 'false'">
+			<i class="icon ion-email-unread"></i>
+			<span>{{task.rejectedMessage}}</span>
+		</div>
+		 <ion-item ng-show="task.isRejected == 'true' && task.isPending == 'false'">
 		  <center>
 		  	<button class="button button-balanced" type="button" ng-click = "acceptProposal(task)">
 		  		Accept Proposal
@@ -59,6 +64,6 @@
 		  		Reject
 		  	</button>
 		  </center>
-		</div>
+		</ion-item>
   </ion-content>
 </ion-view>

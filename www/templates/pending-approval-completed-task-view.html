@@ -8,7 +8,7 @@
 		    <i class="icon ion-clipboard"></i>
     			{{task.description}}
 		  </div>
-  		  <div class="item item-icon-left item-text-wrap">
+  		  <div class="item item-icon-left item-text-wrap" ng-show = "task.isCompleted == 'true'">
 		  	<label class="item-stacked-label">
         	<span class="input-label"><i class="icon ion-android-image"></i></span></label>
 		    
@@ -20,7 +20,8 @@
         <ion-item class="item item-icon-left item-icon-right " ng-click="showContacts()">
           <i class="icon dark ion-cash"></i>
           <span class="fancy">Reward ...</span>
-          <select ng-model = "task.reward">
+          <span class="fancy" ng-show = "task.isApproved == 'true'">${{task.reward}}</span>
+          <select ng-model = "task.reward" ng-show = "task.isApproved == 'false'">
             <option value = "{{task.Average}}">Average ({{task.Average}})</option>
             <option value = "{{task.Average}}">Good ({{task.Good}})</option>
             <option value = "{{task.Average}}">Exellent ({{task.Excellent}})</option>
@@ -28,13 +29,17 @@
           </span>
         </ion-item>
 
-	  	 <div class="item item-icon-left item-text-wrapion">
+	  	<div class="item item-icon-left item-text-wrapion">
 	  	 	<i class="icon ion-android-calendar"></i>
 		  	{{ task.startDate | date }} | {{ task.startTime | date:'shortTime' }}
-		  </div>
+		</div>
 
+        <ion-item class="item item-input item-icon-left item-icon-right " ng-show = "task.isApproved == 'false' && task.isCompleted == 'true'">
+          <span class="input-label"><i class="icon ion-email-unread placeholder-icon"></i></span>
+          <input type="text" min="0" class="col col-50" name="rejectedMessage" placeholder="Reason for reject" ng-model="task.rejectedMessage" required></input>
+         </ion-item>
 		  <!-- Send task for approval -->
-		  <div class = "row">
+		  <div class = "row" ng-show = "task.isApproved == 'false' && task.isCompleted == 'true'">
 		  
 		  	<button class="col col-50 button button-balanced" type="button" ng-click="approveTask()" >
 		  		Approve Task

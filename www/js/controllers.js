@@ -23,10 +23,20 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading, $rootScope)
   $scope.tryLogout();
 })
 
-.controller('MyTasksCtrl', function($scope,$window, $state, $ionicLoading) {
+.controller('MyTasksCtrl', function($scope,$window, $state, $ionicPopup, $ionicLoading) {
   var config = { cache: false };
   $scope.activeTab = 1;
+  $scope.refresh = function(){
 
+     var alertPopup = $ionicPopup.alert({
+       title: 'New Notification',
+       template: '<center>A new change has been made! Refreshing the application...</center>'
+     });
+     alertPopup.then(function(res) {
+       $scope.$broadcast('scroll.refreshComplete');
+     });
+    
+  }
   $scope.changeActiveTab = function(tab){
     $scope.activeTab = tab;  
   }
@@ -38,7 +48,7 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading, $rootScope)
   };
 
   $scope.viewPendingApprovalForCompletedTask = function(task){
-      $state.go('menu.tab.pending-approval-completed-task-view',{'id' : event.id});
+      $state.go('menu.tab.pending-approval-completed-task-view',{'id' : task.id});
   }
 })
 
@@ -89,6 +99,7 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading, $rootScope)
     assignTo: 0
     
   };
+
     // $scope.showDate = function() {
     //   if (typeof datePicker !== 'undefined') {
     //     var today = new Date();
@@ -172,6 +183,8 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading, $rootScope)
       $ionicLoading.show({
           template: '<i class="icon ion-loading-c"></i> Creating task..'
       });
+      var startDate = new Date ($scope.task.startDate);
+      alert(startDate);
       $scope.newTask =
       {
         country: "Singapore",
@@ -193,11 +206,13 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading, $rootScope)
             {isCompleted: "false"},
             {isProposed: "false"},
             {isApproved: "false"},
+            {isApprovedProposed: "false"},
+            {isRejected: "false"},
+            {rejectedMessage: ""},
+            {reward: 0},
+            {isPending: "false"},
             {photos: []},
             {assignTo: $scope.task.assignTo},
-            {reward: 0},
-            {rejectMessage: ""},
-            {isApprovedProposed: "false"}
         ]
       };
     $scope.daisy = JSON.parse($window.localStorage.getItem("daisy"));
@@ -252,77 +267,77 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading, $rootScope)
 
   $scope.task = $filter('filter')($scope.allAvailableTasks, {id:$scope.taskId})[0];
   $scope.assignToUser = $filter('filter')($scope.users, {id:$scope.task.assignTo})[0];
-   $scope.showDate = function() {
-    if (typeof datePicker !== 'undefined') {
-      var today = new Date();
-      var cdate = new Date();
-      if ($scope.task.startDate != '') {
-        cdate = new Date($scope.task.startDate);
-        if (cdate == 'Invalid Date') {
-          cdate = new Date();
-        }
-      }
-      var options = {
-        date: cdate,
-        minDate: today.toDateString(),
-        allowOldDates: false,
-        allowFutureDates: true,
-        mode: 'date'
-      };
+  //  $scope.showDate = function() {
+  //   if (typeof datePicker !== 'undefined') {
+  //     var today = new Date();
+  //     var cdate = new Date();
+  //     if ($scope.task.startDate != '') {
+  //       cdate = new Date($scope.task.startDate);
+  //       if (cdate == 'Invalid Date') {
+  //         cdate = new Date();
+  //       }
+  //     }
+  //     var options = {
+  //       date: cdate,
+  //       minDate: today.toDateString(),
+  //       allowOldDates: false,
+  //       allowFutureDates: true,
+  //       mode: 'date'
+  //     };
 
-      datePicker.show(
-        options,
-        function(date) {
-          if (date == 'Invalid Date') return;
-          $scope.task.startDate = date.toDateString();
-          document.getElementById('date').value = $scope.task.startDate;
-        }
-      );
-    } else {
-      $scope.message = 'Date Picker is not available. Are you on browser?';
-    }
-  };
+  //     datePicker.show(
+  //       options,
+  //       function(date) {
+  //         if (date == 'Invalid Date') return;
+  //         $scope.task.startDate = date.toDateString();
+  //         document.getElementById('date').value = $scope.task.startDate;
+  //       }
+  //     );
+  //   } else {
+  //     $scope.message = 'Date Picker is not available. Are you on browser?';
+  //   }
+  // };
 
-  $scope.showTime = function() {
-      if (typeof datePicker !== 'undefined') {
-          var today = new Date();
-          var ctime = new Date($scope.task.startDate);
-          if ($scope.task.startTime != '') {
-              if(typeof $scope.task.time_in_ms !== 'undefined'){
-                  ctime.setTime($scope.task.time_in_ms);
-              }else{
-                  ctime.setHours($scope.task.startTime.substr(0,2));
-                  ctime.setMinutes($scope.task.startTime.substr(3,2));
-              }
-          }
-          if (ctime == 'Invalid Date'){
-              ctime = new Date($scope.task.startDate);
-          }
-          var options = {
-            date: ctime,
-            minDate: today,
-            minuteStep: 1,
-            mode: 'time'
-          };
-          datePicker.show(
-            options,
-             function(dateTime) {
-              if (dateTime == 'Invalid Date') return;
-              dateTime.setSeconds(0);
-              var realDateTime = new Date(dateTime);
-              realDateTime = realDateTime.toTimeString();
-              realDateTime = realDateTime.substring(0,realDateTime.indexOf("GMT"));
-              $scope.task.startTime = realDateTime;
-           //   $scope.event.time_formated = $scope.event.time.substr(0,5);
-              $scope.task.time_in_ms = dateTime.getTime();
-              document.getElementById('time').value = $scope.task.startTime;
-            }
-          );
+  // $scope.showTime = function() {
+  //     if (typeof datePicker !== 'undefined') {
+  //         var today = new Date();
+  //         var ctime = new Date($scope.task.startDate);
+  //         if ($scope.task.startTime != '') {
+  //             if(typeof $scope.task.time_in_ms !== 'undefined'){
+  //                 ctime.setTime($scope.task.time_in_ms);
+  //             }else{
+  //                 ctime.setHours($scope.task.startTime.substr(0,2));
+  //                 ctime.setMinutes($scope.task.startTime.substr(3,2));
+  //             }
+  //         }
+  //         if (ctime == 'Invalid Date'){
+  //             ctime = new Date($scope.task.startDate);
+  //         }
+  //         var options = {
+  //           date: ctime,
+  //           minDate: today,
+  //           minuteStep: 1,
+  //           mode: 'time'
+  //         };
+  //         datePicker.show(
+  //           options,
+  //            function(dateTime) {
+  //             if (dateTime == 'Invalid Date') return;
+  //             dateTime.setSeconds(0);
+  //             var realDateTime = new Date(dateTime);
+  //             realDateTime = realDateTime.toTimeString();
+  //             realDateTime = realDateTime.substring(0,realDateTime.indexOf("GMT"));
+  //             $scope.task.startTime = realDateTime;
+  //          //   $scope.event.time_formated = $scope.event.time.substr(0,5);
+  //             $scope.task.time_in_ms = dateTime.getTime();
+  //             document.getElementById('time').value = $scope.task.startTime;
+  //           }
+  //         );
 
-      } else {
-          $scope.message = 'Time Picker is not available. Are you on browser?';
-      }
-  };  
+  //     } else {
+  //         $scope.message = 'Time Picker is not available. Are you on browser?';
+  //     }
+  // };  
 
   
   $scope.tryUpdate = function(){
@@ -350,6 +365,11 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading, $rootScope)
             {isCompleted: "false"},
             {isProposed: "false"},
             {isApproved: "false"},
+            {isApprovedProposed: "false"},
+            {isRejected: "false"},
+            {rejectedMessage: ""},
+            {reward: 0},
+            {isPending: "false"},
             {photos: []},
             {assignTo: $scope.task.assignTo}
         ]
@@ -384,7 +404,7 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading, $rootScope)
     
   };
 })
-.controller('ViewCompletedPendingApprovalTaskDetailCtrl', function(TasksCrud, $scope, $stateParams, $window, $http, $filter, $rootScope, $state) {
+.controller('ViewCompletedPendingApprovalTaskDetailCtrl', function(TasksCrud, $scope, $stateParams, $ionicLoading, $window, $http, $filter, $rootScope, $state) {
    var config = { cache: false };
     // get individual task according to ID
     $scope.taskId = $stateParams.id;
@@ -393,16 +413,27 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading, $rootScope)
     $scope.daisy = JSON.parse($window.localStorage.getItem("daisy"));
     $scope.allPendingTasks = JSON.parse($window.localStorage['daisy']).completedTasks;
     $scope.task = $filter('filter')($scope.allPendingTasks, {id:$scope.taskId})[0];
+    if (typeof $scope.task === "undefined")
+    {
+      $scope.allAvailableTasks = JSON.parse($window.localStorage['daisy']).availableTasks;
+      $scope.task = $filter('filter')($scope.allAvailableTasks, {id:$scope.taskId})[0];
+    }
+    if ($scope.task.photos === []){
+      alert('empty');
+    }
     $scope.approveTask = function (){
+      $ionicLoading.show({
+        template: '<i class="icon ion-loading-c"></i> Approving task..'
+      });
       var request = {
-          "appId": 8,
-          "properties": [
-              {"isApproved": "true"},
-              {"reward" : $scope.task.reward},
-              {"photos" : $scope.task.photos}
+          appId: 8,
+          properties: [
+              {isApproved: "true"},
+              {reward : $scope.task.reward},
+              {photos : $scope.task.photos}
           ]
       };
-    $http.put("http://161.202.13.188:9000/api/object/" + $scope.task.id + "/update/properties",request,config)
+    $http.put("http://161.202.13.188:9000/api/object/" + $scope.task.id + "/update/properties",JSON.stringify(request),config)
     .success(function(data, status) {
        $http.get(
             "http://161.202.13.188:9000/api/object/get/app/8/objecttype/34",config)
@@ -457,14 +488,15 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading, $rootScope)
         template: '<i class="icon ion-loading-c"></i> Rejecting task..'
       });
       var request = {
-        "appId": 8,
-        "properties": [
-            {"isRejected": "true"},
-            {"isCompleted": "false"},
-            {"rejectMessage": $scope.task.rejectMessage}
+        appId: 8,
+        properties: [
+            {isAvailable: "true"},
+            {isRejected: "true"},
+            {isCompleted: "false"},
+            {rejectedMessage: $scope.task.rejectedMessage}
         ]
       };
-    $http.put("http://161.202.13.188:9000/api/object/" + $scope.task.id + "/update/properties",request,config)
+    $http.put("http://161.202.13.188:9000/api/object/" + $scope.task.id + "/update/properties",JSON.stringify(request),config)
     .success(function(data, status) {
        // $scope.allAvailableTasks.push(data);
         $scope.luke = JSON.parse($window.localStorage.getItem("luke"));
@@ -476,10 +508,12 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading, $rootScope)
         alert($scope.lukeListIndex);
         alert($scope.daisyListIndex);
         $scope.luke.completedTasks.splice($scope.lukeListIndex,1);
+        taskToFindLuke.isAvailable = "true";
         taskToFindLuke.isRejected = "true";
-        taskToFindLuke.rejectMessage = $scope.task.rejectMessage;
+        taskToFindLuke.rejectedMessage = $scope.task.rejectedMessage;
+        taskToFindDaisy.isAvailable = "true";
         taskToFindDaisy.isRejected = "true";
-        taskToFindDaisy.rejectMessage = $scope.task.rejectMessage;
+        taskToFindDaisy.rejectedMessage = $scope.task.rejectedMessage;
         $scope.luke.rejectedTasks.push(taskToFindLuke);
         $scope.daisy.completedTasks.splice($scope.daisyListIndex,1);
         $scope.daisy.rejectedTasks.push(taskToFindDaisy);
@@ -549,7 +583,7 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading, $rootScope)
      
 
 })
-.controller('PendingTasksCtrl', function($scope,$window, $state, $ionicLoading ) {
+.controller('PendingTasksCtrl', function($scope, $window, $state, $ionicPopup, $ionicLoading ) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -557,9 +591,19 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading, $rootScope)
   //
   //$scope.$on('$ionicView.enter', function(e) {
   //});
-    var config = { cache: false };
+  var config = { cache: false };
   $scope.activeTab = 1;
+  $scope.refresh = function(){
 
+     var alertPopup = $ionicPopup.alert({
+       title: 'New Notification',
+       template: '<center>A new change has been made! Refreshing the application...</center>'
+     });
+     alertPopup.then(function(res) {
+       $scope.$broadcast('scroll.refreshComplete');
+     });
+    
+  }
   $scope.changeActiveTab = function(tab){
     $scope.activeTab = tab;  
   }
@@ -573,7 +617,7 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading, $rootScope)
 
 })
 
-.controller('ViewPendingApprovalTaskDetailCtrl', function(TasksCrud, $scope, $stateParams, $window, $http, $filter, $rootScope, $state) {
+.controller('ViewPendingApprovalTaskDetailCtrl', function(TasksCrud, $scope, $stateParams, $window, $ionicLoading, $http, $filter, $rootScope, $state) {
    var config = { cache: false };
     // get individual task according to ID
     $scope.taskId = $stateParams.id;
@@ -582,17 +626,26 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading, $rootScope)
     $scope.daisy = JSON.parse($window.localStorage.getItem("daisy"));
     $scope.allProposedTasks = JSON.parse($window.localStorage['daisy']).proposedTasks;
     $scope.task = $filter('filter')($scope.allProposedTasks, {id:$scope.taskId})[0];
+    if (typeof $scope.task === "undefined")
+    {
+      $scope.allAvailableTasks = JSON.parse($window.localStorage['daisy']).availableTasks;
+      $scope.task = $filter('filter')($scope.allAvailableTasks, {id:$scope.taskId})[0];
+    }
+    console.log($scope.task);
     $scope.approveTask = function (){
+      $ionicLoading.show({
+        template: '<i class="icon ion-loading-c"></i> Approving task..'
+      });
       var request = {
-          "appId": 8,
-          "properties": [
-              {"isApprovedProposed": "true"},
-              {"isAvailable": "true"},
-              {"isPending": "false"}
+          appId: 8,
+          properties: [
+              {isApprovedProposed: "true"},
+              {isAvailable: "true"},
+              {isPending: "false"}
           ]
       };
 
-    $http.put("http://161.202.13.188:9000/api/object/" + $scope.task.id + "/update/properties",request,config)
+    $http.put("http://161.202.13.188:9000/api/object/" + $scope.task.id + "/update/properties",JSON.stringify(request),config)
     .success(function(data, status) {
        // $scope.allAvailableTasks.push(data);
        // var index = $scope.luke.proposedTasks.indexOf(data);
@@ -707,8 +760,9 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading, $rootScope)
             {isApproved: "false"},
             {isPending: "false"},
             {isRejected: "true"},
+            {reward: 0},
             {isApprovedProposed: "false"},
-            {rejectMessage: $scope.task.rejectMessage},
+            {rejectedMessage: $scope.task.rejectedMessage},
             {photos: []},
             {assignTo: $scope.task.assignTo}
         ]
@@ -737,7 +791,7 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading, $rootScope)
   }
 
 })
-.controller('EditProposalCtrl', function($scope, $window, $stateParams, $http, $state, $filter, $ionicLoading) {
+.controller('EditProposalCtrl', function($scope, $ionicPopup, $window, $stateParams, $http, $state, $filter, $ionicLoading) {
   var config = { cache: false };
   // get individual task according to ID
   $scope.taskId = $stateParams.id;
@@ -779,8 +833,9 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading, $rootScope)
             {isApproved: "false"},
             {isPending: "false"},
             {isRejected: "true"},
+            {reward: 0},
             {isApprovedProposed: "false"},
-            {rejectMessage: $scope.task.rejectMessage},
+            {rejectedMessage: $scope.task.rejectedMessage},
             {photos: []},
             {assignTo: $scope.task.assignTo}
         ]
@@ -812,6 +867,17 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading, $rootScope)
 })
   
 
-.controller('ProfileCtrl', function($scope) {
+.controller('ProfileCtrl', function($scope, $ionicPopup) {
   var config = { cache: false };
+  $scope.refresh = function(){
+
+     var alertPopup = $ionicPopup.alert({
+       title: 'New Notification',
+       template: '<center>A new change has been made! Refreshing the application...</center>'
+     });
+     alertPopup.then(function(res) {
+       $scope.$broadcast('scroll.refreshComplete');
+     });
+    
+  }
 });

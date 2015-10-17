@@ -23,5 +23,7 @@
     "com.plugin.datepicker",
     "org.apache.cordova.camera"
   ],
-  "cordovaPlatforms": []
+  "cordovaPlatforms": [
+    "ios"
+  ]
 }
