@@ -100,71 +100,71 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading, $rootScope)
     
   };
 
-    // $scope.showDate = function() {
-    //   if (typeof datePicker !== 'undefined') {
-    //     var today = new Date();
-    //     var cdate = new Date();
-    //     if ($scope.task.startDate != '') {
-    //       cdate = new Date($scope.task.startDate);
-    //       if (cdate == 'Invalid Date') {
-    //         cdate = new Date();
-    //       }
-    //     }
-    //     var options = {
-    //       date: cdate,
-    //       minDate: today.toDateString(),
-    //       allowOldDates: false,
-    //       allowFutureDates: true,
-    //       mode: 'date'
-    //     };
+    $scope.showDate = function() {
+      if (typeof datePicker !== 'undefined') {
+        var today = new Date();
+        var cdate = new Date();
+        if ($scope.task.startDate != '') {
+          cdate = new Date($scope.task.startDate);
+          if (cdate == 'Invalid Date') {
+            cdate = new Date();
+          }
+        }
+        var options = {
+          date: cdate,
+          minDate: today.toDateString(),
+          allowOldDates: false,
+          allowFutureDates: true,
+          mode: 'date'
+        };
 
-    //     datePicker.show(
-    //       options,
-    //       function(date) {
-    //         if (date == 'Invalid Date') return;
-    //         $scope.task.startDate = date.toDateString();
-    //         document.getElementById('date').value = $scope.task.startDate;
-    //       }
-    //     );
-    //   } else {
-    //     $scope.message = 'Date Picker is not available. Are you on browser?';
-    //   }
-    // };
+        datePicker.show(
+          options,
+          function(date) {
+            if (date == 'Invalid Date') return;
+            $scope.task.startDate = date.toDateString();
+            document.getElementById('date').value = $scope.task.startDate;
+          }
+        );
+      } else {
+        $scope.message = 'Date Picker is not available. Are you on browser?';
+      }
+    };
 
-    // $scope.showTime = function() {
-    //     if (typeof datePicker !== 'undefined') {
-    //         var today = new Date();
-    //         var ctime = new Date();
-    //         if (typeof $scope.task.startTime !== 'undefined' && $scope.task.startTime != '') {
-    //           ctime.setTime($scope.task.time_in_ms);
-    //         }
-    //         var options = {
-    //           date: ctime,
-    //           minDate: today,
-    //           minuteStep: 1,
-    //           mode: 'time'
-    //         };
+    $scope.showTime = function() {
+        if (typeof datePicker !== 'undefined') {
+            var today = new Date();
+            var ctime = new Date();
+            if (typeof $scope.task.startTime !== 'undefined' && $scope.task.startTime != '') {
+              ctime.setTime($scope.task.time_in_ms);
+            }
+            var options = {
+              date: ctime,
+              minDate: today,
+              minuteStep: 1,
+              mode: 'time'
+            };
 
-    //         datePicker.show(
-    //           options,
-    //            function(dateTime) {
-    //             if (dateTime == 'Invalid Date') return;
-    //       //      $scope.event.time = dateTime.toTimeString();
-    //             $scope.task.time_in_ms = dateTime.getTime();
-    //             dateTime.setSeconds(0);
-    //             var realDateTime = new Date(dateTime);
-    //             realDateTime = realDateTime.toTimeString();
-    //             realDateTime = realDateTime.substring(0,realDateTime.indexOf("GMT"));
-    //             $scope.task.startTime = realDateTime;
-    //            // $scope.event.time_formated = $scope.event.time.substr(0,5);
-    //             document.getElementById('time').value = $scope.task.startTime;
-    //           }
-    //         );
+            datePicker.show(
+              options,
+               function(dateTime) {
+                if (dateTime == 'Invalid Date') return;
+          //      $scope.event.time = dateTime.toTimeString();
+                $scope.task.time_in_ms = dateTime.getTime();
+                dateTime.setSeconds(0);
+                var realDateTime = new Date(dateTime);
+                realDateTime = realDateTime.toTimeString();
+                realDateTime = realDateTime.substring(0,realDateTime.indexOf("GMT"));
+                $scope.task.startTime = realDateTime;
+               // $scope.event.time_formated = $scope.event.time.substr(0,5);
+                document.getElementById('time').value = $scope.task.startTime;
+              }
+            );
 
-    //     } else {
-    //         $scope.message = 'Time Picker is not available. Are you on browser?';
-    //     }
-    // };
+        } else {
+            $scope.message = 'Time Picker is not available. Are you on browser?';
+        }
+    };
 
     if ($scope.currentUser.name == "")
     {
@@ -267,77 +267,77 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading, $rootScope)
 
   $scope.task = $filter('filter')($scope.allAvailableTasks, {id:$scope.taskId})[0];
   $scope.assignToUser = $filter('filter')($scope.users, {id:$scope.task.assignTo})[0];
-  //  $scope.showDate = function() {
-  //   if (typeof datePicker !== 'undefined') {
-  //     var today = new Date();
-  //     var cdate = new Date();
-  //     if ($scope.task.startDate != '') {
-  //       cdate = new Date($scope.task.startDate);
-  //       if (cdate == 'Invalid Date') {
-  //         cdate = new Date();
-  //       }
-  //     }
-  //     var options = {
-  //       date: cdate,
-  //       minDate: today.toDateString(),
-  //       allowOldDates: false,
-  //       allowFutureDates: true,
-  //       mode: 'date'
-  //     };
+   $scope.showDate = function() {
+    if (typeof datePicker !== 'undefined') {
+      var today = new Date();
+      var cdate = new Date();
+      if ($scope.task.startDate != '') {
+        cdate = new Date($scope.task.startDate);
+        if (cdate == 'Invalid Date') {
+          cdate = new Date();
+        }
+      }
+      var options = {
+        date: cdate,
+        minDate: today.toDateString(),
+        allowOldDates: false,
+        allowFutureDates: true,
+        mode: 'date'
+      };
 
-  //     datePicker.show(
-  //       options,
-  //       function(date) {
-  //         if (date == 'Invalid Date') return;
-  //         $scope.task.startDate = date.toDateString();
-  //         document.getElementById('date').value = $scope.task.startDate;
-  //       }
-  //     );
-  //   } else {
-  //     $scope.message = 'Date Picker is not available. Are you on browser?';
-  //   }
-  // };
+      datePicker.show(
+        options,
+        function(date) {
+          if (date == 'Invalid Date') return;
+          $scope.task.startDate = date.toDateString();
+          document.getElementById('date').value = $scope.task.startDate;
+        }
+      );
+    } else {
+      $scope.message = 'Date Picker is not available. Are you on browser?';
+    }
+  };
 
-  // $scope.showTime = function() {
-  //     if (typeof datePicker !== 'undefined') {
-  //         var today = new Date();
-  //         var ctime = new Date($scope.task.startDate);
-  //         if ($scope.task.startTime != '') {
-  //             if(typeof $scope.task.time_in_ms !== 'undefined'){
-  //                 ctime.setTime($scope.task.time_in_ms);
-  //             }else{
-  //                 ctime.setHours($scope.task.startTime.substr(0,2));
-  //                 ctime.setMinutes($scope.task.startTime.substr(3,2));
-  //             }
-  //         }
-  //         if (ctime == 'Invalid Date'){
-  //             ctime = new Date($scope.task.startDate);
-  //         }
-  //         var options = {
-  //           date: ctime,
-  //           minDate: today,
-  //           minuteStep: 1,
-  //           mode: 'time'
-  //         };
-  //         datePicker.show(
-  //           options,
-  //            function(dateTime) {
-  //             if (dateTime == 'Invalid Date') return;
-  //             dateTime.setSeconds(0);
-  //             var realDateTime = new Date(dateTime);
-  //             realDateTime = realDateTime.toTimeString();
-  //             realDateTime = realDateTime.substring(0,realDateTime.indexOf("GMT"));
-  //             $scope.task.startTime = realDateTime;
-  //          //   $scope.event.time_formated = $scope.event.time.substr(0,5);
-  //             $scope.task.time_in_ms = dateTime.getTime();
-  //             document.getElementById('time').value = $scope.task.startTime;
-  //           }
-  //         );
+  $scope.showTime = function() {
+      if (typeof datePicker !== 'undefined') {
+          var today = new Date();
+          var ctime = new Date($scope.task.startDate);
+          if ($scope.task.startTime != '') {
+              if(typeof $scope.task.time_in_ms !== 'undefined'){
+                  ctime.setTime($scope.task.time_in_ms);
+              }else{
+                  ctime.setHours($scope.task.startTime.substr(0,2));
+                  ctime.setMinutes($scope.task.startTime.substr(3,2));
+              }
+          }
+          if (ctime == 'Invalid Date'){
+              ctime = new Date($scope.task.startDate);
+          }
+          var options = {
+            date: ctime,
+            minDate: today,
+            minuteStep: 1,
+            mode: 'time'
+          };
+          datePicker.show(
+            options,
+             function(dateTime) {
+              if (dateTime == 'Invalid Date') return;
+              dateTime.setSeconds(0);
+              var realDateTime = new Date(dateTime);
+              realDateTime = realDateTime.toTimeString();
+              realDateTime = realDateTime.substring(0,realDateTime.indexOf("GMT"));
+              $scope.task.startTime = realDateTime;
+           //   $scope.event.time_formated = $scope.event.time.substr(0,5);
+              $scope.task.time_in_ms = dateTime.getTime();
+              document.getElementById('time').value = $scope.task.startTime;
+            }
+          );
 
-  //     } else {
-  //         $scope.message = 'Time Picker is not available. Are you on browser?';
-  //     }
-  // };  
+      } else {
+          $scope.message = 'Time Picker is not available. Are you on browser?';
+      }
+  };  
 
   
   $scope.tryUpdate = function(){

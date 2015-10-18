@@ -21,8 +21,19 @@ angular.module('jiaYongAuth.controllers', [])
     .success(function(data, status) { 
         $window.localStorage['users'] = JSON.stringify(data);
         $window.localStorage['daisy'] = JSON.stringify(data[0]);
+        if(account.email == "daisy@gmail.com")
+        {
+            $window.localStorage['currentUser'] = JSON.stringify(data[0]);
+            $window.location.href = 'jiaYong.html';
+        }else{
+            $window.localStorage['currentUser'] = JSON.stringify(data[2]);
+            $window.location.href = 'jiaYong-child.html';
+        }
+        // $ionicLoading.hide();
+        // $window.localStorage['currentUser'] = JSON.stringify(data);
         // $window.localStorage['avail'] = JSON.stringify(data[0].availabTasks);
         $window.localStorage['luke'] = JSON.stringify(data[2]);
+        $ionicLoading.hide();
     }).error(function(data, status){
       $ionicLoading.hide();
       $scope.message = data;
@@ -41,27 +52,27 @@ angular.module('jiaYongAuth.controllers', [])
     //   $scope.message = data;
     // });
 
-    $http.post(
-      address + "/user/login",
-      { 
-        'email': account.email,
-        'password': account.password 
-      },
-      config)
-    .success(function(data, status) { 
-        $window.localStorage['currentUser'] = JSON.stringify(data);
-        if(data.email == "daisy@gmail.com")
-        {
-            $window.location.href = 'jiaYong.html';
-        }else{
-            $window.location.href = 'jiaYong-child.html';
-        }
-        $ionicLoading.hide();
+    // $http.post(
+    //   address + "/user/login",
+    //   { 
+    //     'email': account.email,
+    //     'password': account.password 
+    //   },
+    //   config)
+    // .success(function(data, status) { 
+        // $window.localStorage['currentUser'] = JSON.stringify(data);
+        // if(account.email == "daisy@gmail.com")
+        // {
+        //     $window.location.href = 'jiaYong.html';
+        // }else{
+        //     $window.location.href = 'jiaYong-child.html';
+        // }
+        // $ionicLoading.hide();
       
-    }).error(function(data, status){
-      $ionicLoading.hide();
-      $scope.message = data;
-    });
+    // }).error(function(data, status){
+    //   $ionicLoading.hide();
+    //   $scope.message = data;
+    // });
     // if (account.email == "jiayong-master@gmail.com" && account.password == "password"){
 
     

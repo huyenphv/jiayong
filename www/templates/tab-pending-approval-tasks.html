@@ -18,7 +18,7 @@
     <ion-list can-swipe="true" ng-show="currentUser.proposedTasks.length != 0">
       <ion-item ng-repeat="task in currentUser.proposedTasks | filter:{isApproved : 'false'} && {isPending : 'true'}" ng-click = "detail(task)" >
           <a class="item item-thumbnail-left">
-            <img src="../img/venkman.jpg">
+            <img src="img/venkman.jpg">
             <h2>{{task.name}}</h2>
             <p>{{task.description}}</p>
             <small>{{ task.startDate | date }} | {{ task.startTime | date:'shortTime' }}</small><br/>
@@ -41,7 +41,7 @@
     <ion-list can-swipe="true" ng-show="currentUser.availableTasks.length != 0">
       <ion-item ng-repeat="task in currentUser.availableTasks | filter: {  isApprovedProposed : 'true'}" ng-click = "viewApproved(task)">
           <a class="item item-thumbnail-left">
-            <img src="../img/venkman.jpg">
+            <img src="img/venkman.jpg">
             <h2>{{task.name}}</h2>
             <p>{{task.description}}</p>
             <small>{{ task.startDate | date }} | {{ task.startTime | date:'shortTime' }}</small><br/>

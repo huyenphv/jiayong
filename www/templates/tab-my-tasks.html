@@ -29,7 +29,7 @@
       <ion-item ng-repeat="task in currentUser.availableTasks | filter: {isAvailable : 'true'}" ng-click = "detail(task)">
 
            <a class="item item-thumbnail-left">
-            <img src="../img/venkman.jpg">
+            <img src="img/venkman.jpg">
             <h2>{{task.name}}</h2>
             <p>{{task.description}}</p>
             <small>{{ task.startDate | date }} | {{ task.startTime | date:'shortTime' }}</small><br/>
@@ -56,7 +56,7 @@
        <ion-item ng-repeat="task in currentUser.availableTasks | filter : {isAvailable : 'false'} " ng-click = "viewPendingApprovalForCompletedTask(task)" >
 
            <a class="item item-thumbnail-left">
-            <img src="../img/venkman.jpg">
+            <img src="img/venkman.jpg">
             <h2>{{task.name}}</h2>
             <p>{{task.description}}</p>
             <small>{{ task.startDate | date }} | {{ task.startTime | date:'shortTime' }}</small><br/>
@@ -81,7 +81,7 @@
        <ion-item ng-repeat="task in currentUser.completedTasks | filter:{isApproved : 'true'}" ng-click = "viewPendingApprovalForCompletedTask(task)">
 
            <a class="item item-thumbnail-left">
-            <img src="../img/venkman.jpg">
+            <img src="img/venkman.jpg">
             <h2>{{task.name}}</h2>
             <p>{{task.description}}</p>
             <small>{{ task.startDate | date }} | {{ task.startTime | date:'shortTime' }}</small><br/>
@@ -104,7 +104,7 @@
        <ion-item ng-repeat="task in currentUser.completedTasks | filter: {isApproved : 'false'}" ng-click = "viewPendingApprovalForCompletedTask(task)">
 
            <a class="item item-thumbnail-left">
-            <img src="../img/venkman.jpg">
+            <img src="img/venkman.jpg">
             <h2>{{task.name}}</h2>
             <p>{{task.description}}</p>
             <small>{{ task.startDate | date }} | {{ task.startTime | date:'shortTime' }}</small><br/>

@@ -393,7 +393,7 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
 })
 
 
-.controller('ViewMyTaskDetailCtrl', function($rootScope, $ionicPopup, $http, $cordovaCamera, $scope, $ionicActionSheet, $filter,$window, $state, $ionicLoading, $stateParams){
+.controller('ViewMyTaskDetailCtrl', function($rootScope, $ionicPopup, $ionicModal, $http, $cordovaCamera, $scope, $ionicActionSheet, $filter,$window, $state, $ionicLoading, $stateParams){
   var config = { cache: false };
   // get individual task according to ID
   $scope.taskId = $stateParams.id;
@@ -525,6 +525,14 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
       }
     });
     };
+
+    $ionicModal.fromTemplateUrl('templates/modal-event-photo.html', function($ionicModal) {
+        $scope.modalPhoto = $ionicModal;
+    }, { 
+        scope: $scope,
+        focusFirstInput: false,
+        animation: 'slide-in-up'
+    });
 
    //show modal 
     $scope.editPhoto = function(){

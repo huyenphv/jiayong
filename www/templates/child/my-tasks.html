@@ -24,7 +24,7 @@
     <ion-list can-swipe="true" ng-show="currentUser.availableTasks.length != 0">
       <ion-item ng-repeat="task in currentUser.availableTasks | filter:{isAvailable : 'true'}" ng-click = "detail(task)">
           <a class="item item-thumbnail-left">
-            <img src="../img/venkman.jpg">
+            <img src="img/venkman.jpg">
             <h2>{{task.name}}</h2>
             <p>{{task.description}}</p>
             <small>{{ task.startDate | date }} | {{ task.startTime | date:'shortTime' }}</small><br/>
