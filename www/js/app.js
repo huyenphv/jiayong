@@ -130,7 +130,7 @@ angular.module('jiaYongApp', ['ionic', 'jiaYongApp.controllers', 'jiaYongApp.ser
   })
 
   .state('menu.tab.edit-proposed-task', {
-    url: '/edit-proposed-task',
+    url: '/edit-proposed-task/:id',
     cache : false,
     views: {
         'tab-pending-approval-tasks': {

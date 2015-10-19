@@ -38,11 +38,11 @@
     </ion-list>
   </div>
   
-<!-- tab for in progress tasks -->
+<!-- tab for rejected tasks -->
 
   <div class="has-header" ng-if="activeTab==2">
     <ion-list can-swipe="true" ng-show="currentUser.proposedTasks.length != 0">
-      <ion-item ng-repeat="task in currentUser.proposedTasks | filter: {  isApprovedProposed : 'false'} && {isPending : false}" ng-click = "viewRejected(task)">
+      <ion-item ng-repeat="task in currentUser.rejectedTasks | filter:  {isProposed : 'true'} && {isPending :'false'}" ng-click = "viewRejected(task)">
           <a class="item item-thumbnail-left">
             <img src="../img/venkman.jpg">
             <h2>{{task.name}}</h2>

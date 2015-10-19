@@ -21,7 +21,7 @@
 		    	
 		  </div>
 
-		  <div class="item item-icon-left item-text-wrap" ng-if="task.isCompleted == false">
+		  <div class="item item-icon-left item-text-wrap" ng-if="task.isCompleted == 'false'">
 			<label class="item-stacked-label">
         	<span class="input-label">Earnings</span></label>
 		    <div class="col-20">
@@ -52,16 +52,14 @@
 			<i class="icon ion-email-unread"></i>
 			<span>{{task.rejectedMessage}}</span>
 		</div>
-		 <ion-item ng-show="task.isRejected == 'true' && task.isPending == 'false'">
+		
+		 <ion-item ng-show="task.isRejected == 'true'">
 		  <center>
 		  	<button class="button button-balanced" type="button" ng-click = "acceptProposal(task)">
 		  		Accept Proposal
 		  	</button>
 		  	<button class="button button-positive" type="button" ng-click = "goRepropose(task)">
 		  		Re-propose
-		  	</button>
-		  	<button class="button button-assertive" type="button" ng-click="removeTask()" >
-		  		Reject
 		  	</button>
 		  </center>
 		</ion-item>

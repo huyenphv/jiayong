@@ -101,7 +101,7 @@
 
   <div ng-if="activeTab==4">
     <ion-list can-swipe="true" ng-show="currentUser.completedTasks != 0">
-       <ion-item ng-repeat="task in currentUser.completedTasks | filter: {isApproved : 'false'}" ng-click = "viewPendingApprovalForCompletedTask(task)">
+       <ion-item ng-repeat="task in currentUser.completedTasks | filter: {isPending : 'true'}" ng-click = "viewPendingApprovalForCompletedTask(task)">
 
            <a class="item item-thumbnail-left">
             <img src="img/venkman.jpg">

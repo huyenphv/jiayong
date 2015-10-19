@@ -1,7 +1,7 @@
 angular.module('jiaYongAppChild.controllers', [])
 /* @screen: Logout of the app */
 .controller('LogoutCtrl', function(
-$scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
+$scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading, $window)
 {
   $scope.tryLogout = function(){
     var config = { cache: false };
@@ -10,14 +10,15 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
       template: '<i class="icon ion-loading-c"></i> Logging out..'
     });
 
-    $http.post("http://161.202.13.188:9000/user/logout",config)
-    .success(function(data, status) {
+    // $http.post("http://161.202.13.188:9000/user/logout",config)
+    // .success(function(data, status) {
+       window.localStorage.removeItem('currentUser');
        window.location.href = 'index.html#/login';
-    }).error(function(data, status){
-      console.log(data);
-    }).finally(function(){
+    // }).error(function(data, status){
+    //   console.log(data);
+    // }).finally(function(){
       $ionicLoading.hide();
-    });
+    // });
   };
 
   $scope.tryLogout();
@@ -32,6 +33,21 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
      template: '<center>A new change has been made! Refreshing the application...</center>'
    });
    alertPopup.then(function(res) {
+      $http.get(
+      "http://161.202.13.188:9000" + "/api/object/get/app/8/objecttype/34",config)
+    .success(function(data, status) { 
+        $window.localStorage['users'] = JSON.stringify(data);
+        $window.localStorage['daisy'] = JSON.stringify(data[0]);
+        // $ionicLoading.hide();
+        // $window.localStorage['currentUser'] = JSON.stringify(data);
+        // $window.localStorage['avail'] = JSON.stringify(data[0].availabTasks);
+        $window.localStorage['luke'] = JSON.stringify(data[2]);
+        $state.go('menu.tab.my-tasks',{},{reload:true});
+        $ionicLoading.hide();
+    }).error(function(data, status){
+      $ionicLoading.hide();
+      $scope.message = data;
+    }); 
      $scope.$broadcast('scroll.refreshComplete');
    });
     
@@ -71,7 +87,7 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
     city: "Singapore",
     name: "",
     objectTypeId: 35,
-    userId: $scope.currentUser.id,
+    userId: 7,
     appId: 8,
     startDate: "",
     startTime: "",
@@ -82,71 +98,71 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
     assignTo: 0
     
   };
-    $scope.showDate = function() {
-      if (typeof datePicker !== 'undefined') {
-        var today = new Date();
-        var cdate = new Date();
-        if ($scope.task.startDate != '') {
-          cdate = new Date($scope.task.startDate);
-          if (cdate == 'Invalid Date') {
-            cdate = new Date();
-          }
-        }
-        var options = {
-          date: cdate,
-          minDate: today.toDateString(),
-          allowOldDates: false,
-          allowFutureDates: true,
-          mode: 'date'
-        };
+    // $scope.showDate = function() {
+    //   if (typeof datePicker !== 'undefined') {
+    //     var today = new Date();
+    //     var cdate = new Date();
+    //     if ($scope.task.startDate != '') {
+    //       cdate = new Date($scope.task.startDate);
+    //       if (cdate == 'Invalid Date') {
+    //         cdate = new Date();
+    //       }
+    //     }
+    //     var options = {
+    //       date: cdate,
+    //       minDate: today.toDateString(),
+    //       allowOldDates: false,
+    //       allowFutureDates: true,
+    //       mode: 'date'
+    //     };
 
-        datePicker.show(
-          options,
-          function(date) {
-            if (date == 'Invalid Date') return;
-            $scope.task.startDate = date.toDateString();
-            document.getElementById('date').value = $scope.task.startDate;
-          }
-        );
-      } else {
-        $scope.message = 'Date Picker is not available. Are you on browser?';
-      }
-    };
+    //     datePicker.show(
+    //       options,
+    //       function(date) {
+    //         if (date == 'Invalid Date') return;
+    //         $scope.task.startDate = date.toDateString();
+    //         document.getElementById('date').value = $scope.task.startDate;
+    //       }
+    //     );
+    //   } else {
+    //     $scope.message = 'Date Picker is not available. Are you on browser?';
+    //   }
+    // };
 
-    $scope.showTime = function() {
-        if (typeof datePicker !== 'undefined') {
-            var today = new Date();
-            var ctime = new Date();
-            if (typeof $scope.task.startTime !== 'undefined' && $scope.task.startTime != '') {
-              ctime.setTime($scope.task.time_in_ms);
-            }
-            var options = {
-              date: ctime,
-              minDate: today,
-              minuteStep: 1,
-              mode: 'time'
-            };
+    // $scope.showTime = function() {
+    //     if (typeof datePicker !== 'undefined') {
+    //         var today = new Date();
+    //         var ctime = new Date();
+    //         if (typeof $scope.task.startTime !== 'undefined' && $scope.task.startTime != '') {
+    //           ctime.setTime($scope.task.time_in_ms);
+    //         }
+    //         var options = {
+    //           date: ctime,
+    //           minDate: today,
+    //           minuteStep: 1,
+    //           mode: 'time'
+    //         };
 
-            datePicker.show(
-              options,
-               function(dateTime) {
-                if (dateTime == 'Invalid Date') return;
-          //      $scope.event.time = dateTime.toTimeString();
-                $scope.task.time_in_ms = dateTime.getTime();
-                dateTime.setSeconds(0);
-                var realDateTime = new Date(dateTime);
-                realDateTime = realDateTime.toTimeString();
-                realDateTime = realDateTime.substring(0,realDateTime.indexOf("GMT"));
-                $scope.task.startTime = realDateTime;
-               // $scope.event.time_formated = $scope.event.time.substr(0,5);
-                document.getElementById('time').value = $scope.task.startTime;
-              }
-            );
+    //         datePicker.show(
+    //           options,
+    //            function(dateTime) {
+    //             if (dateTime == 'Invalid Date') return;
+    //       //      $scope.event.time = dateTime.toTimeString();
+    //             $scope.task.time_in_ms = dateTime.getTime();
+    //             dateTime.setSeconds(0);
+    //             var realDateTime = new Date(dateTime);
+    //             realDateTime = realDateTime.toTimeString();
+    //             realDateTime = realDateTime.substring(0,realDateTime.indexOf("GMT"));
+    //             $scope.task.startTime = realDateTime;
+    //            // $scope.event.time_formated = $scope.event.time.substr(0,5);
+    //             document.getElementById('time').value = $scope.task.startTime;
+    //           }
+    //         );
 
-        } else {
-            $scope.message = 'Time Picker is not available. Are you on browser?';
-        }
-    };
+    //     } else {
+    //         $scope.message = 'Time Picker is not available. Are you on browser?';
+    //     }
+    // };
 
     if ($scope.currentUser.name == "Luke")
     {
@@ -172,7 +188,7 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
         city: "Singapore",
         name: $scope.task.name,
         objectTypeId: 35,
-        userId: $scope.currentUser.id,
+        userId: 7,
         appId: 8,
         properties: [
             {name: $scope.task.name},
@@ -235,26 +251,42 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
 
 })
 
-.controller('MyProposedTasksCtrl', function($scope, $ionicPopup, $stateParams,$ionicLoading, $window, $state) {
+.controller('MyProposedTasksCtrl', function($scope, $ionicPopup, $http, $stateParams,$ionicLoading, $window, $state) {
   var config = { cache: false };
   $scope.activeTab = 1;
-
+  
   $scope.refresh = function(){
-
    var alertPopup = $ionicPopup.alert({
      title: 'New Notification',
      template: '<center>A new change has been made! Refreshing the application...</center>'
    });
    alertPopup.then(function(res) {
+      $http.get(
+      "http://161.202.13.188:9000" + "/api/object/get/app/8/objecttype/34",config)
+    .success(function(data, status) { 
+        $window.localStorage['users'] = JSON.stringify(data);
+        $window.localStorage['daisy'] = JSON.stringify(data[0]);
+        // $ionicLoading.hide();
+        // $window.localStorage['currentUser'] = JSON.stringify(data);
+        // $window.localStorage['avail'] = JSON.stringify(data[0].availabTasks);
+        $window.localStorage['luke'] = JSON.stringify(data[2]);
+        $state.go('menu.tab.my-propose-task',{},{reload:true});
+        $ionicLoading.hide();
+    }).error(function(data, status){
+      $ionicLoading.hide();
+      $scope.message = data;
+    }); 
      $scope.$broadcast('scroll.refreshComplete');
    });
     
   }
+  $scope.currentUser = JSON.parse($window.localStorage['luke']);
 
   $scope.changeActiveTab = function(tab){
     $scope.activeTab = tab;  
   }
   $scope.currentUser = JSON.parse($window.localStorage.getItem("luke"));
+  console.log($scope.currentUser);
   $scope.viewPending = function(task) {
       $state.go('menu.tab.view-pending-proposed-task',{'id' : task.id});
   };
@@ -273,6 +305,15 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
   $scope.allTasks = JSON.parse($window.localStorage['luke']).proposedTasks;
   console.log($scope.allTasks);
   $scope.task = $filter('filter')($scope.allTasks, {id:$scope.taskId})[0];
+  if (typeof $scope.task === "undefined"){
+      $scope.allTasks = JSON.parse($window.localStorage['luke']).availableTasks;
+      console.log($scope.allTasks);
+      $scope.task = $filter('filter')($scope.allTasks, {id:$scope.taskId})[0];
+      if (typeof $scope.task === "undefined"){
+        $scope.allTasks = JSON.parse($window.localStorage['luke']).rejectedTasks;
+        $scope.task = $filter('filter')($scope.allTasks, {id:$scope.taskId})[0];
+      }
+  }
   $scope.users = JSON.parse($window.localStorage.getItem("users"));
   $scope.submitToUser = $filter('filter')($scope.users, {id:$scope.task.assignTo})[0];
   $scope.goRepropose = function() {
@@ -288,6 +329,7 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
               {isApprovedProposed: "true"},
               {isAvailable: "true"},
               {isRejected: "false"},
+              {rejectedMessage: $scope.task.rejectedMessage},
               {isPending: "false"}
           ]
       };
@@ -303,15 +345,21 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
         var taskToFindLuke = $filter('filter')($scope.luke.proposedTasks, {id:$scope.task.id})[0];
         $scope.lukeListIndex = $scope.luke.proposedTasks.indexOf(taskToFindLuke);
         $scope.daisyListIndex = $scope.daisy.proposedTasks.indexOf(taskToFindDaisy);
-        alert($scope.lukeListIndex);
-        alert($scope.daisyListIndex);
+        // alert($scope.lukeListIndex);
+        // alert($scope.daisyListIndex);
         $scope.luke.proposedTasks.splice($scope.lukeListIndex,1);
         taskToFindLuke.isAvailable = "true";
         taskToFindLuke.isApprovedProposed = "true";
+        taskToFindLuke.isRejected = "false";
+        taskToFindLuke.isPending = "false";
+        taskToFindLuke.rejectedMessage = $scope.luke.rejectedMessage;
         taskToFindDaisy.isAvailable = "true";
         taskToFindDaisy.isApprovedProposed = "true";
+        taskToFindDaisy.isRejected = "false";
+        taskToFindDaisy.isPending = "false";
+        taskToFindDaisy.rejectedMessage = $scope.daisy.rejectedMessage;
         $scope.luke.availableTasks.push(taskToFindLuke);
-        $scope.daisy.proposedTasks.splice($scope.daisyListIndex,1);
+        // $scope.daisy.proposedTasks.splice($scope.daisyListIndex,1);
         $scope.daisy.availableTasks.push(taskToFindDaisy);
         $window.localStorage['daisy'] = JSON.stringify($scope.daisy);
         $window.localStorage['luke'] = JSON.stringify($scope.luke);
@@ -333,7 +381,8 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
               {"availableTasks": $scope.daisy.availableTasks},
               {"completedTasks": $scope.daisy.completedTasks},
               {"rejectedTasks": $scope.daisy.rejectedTasks},
-              {"proposedTasks": $scope.daisy.proposedTasks}
+              {"proposedTasks": $scope.daisy.proposedTasks},
+              {"balance": $scope.daisy.balance}
             ]
           }
 
@@ -356,12 +405,13 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
               {"availableTasks": $scope.luke.availableTasks},
               {"completedTasks": $scope.luke.completedTasks},
               {"rejectedTasks": $scope.luke.rejectedTasks},
-              {"proposedTasks": $scope.luke.proposedTasks}
+              {"proposedTasks": $scope.luke.proposedTasks},
+              {"balance": $scope.luke.balance}
             ]
           }
             ,config)
             .success(function(data, status) {
-               $state.go('menu.tab.pending-approval-tasks',{},{reload : true});
+               $state.go('menu.tab.my-tasks',{},{reload : true});
             }).error(function(data, status){
               console.log(data);
             })      
@@ -376,24 +426,39 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
   };
 })
 
-.controller('ProfileCtrl', function($scope, $window, $ionicPopup) {
+.controller('ProfileCtrl', function($scope, $window, $ionicPopup, $http, $state, $ionicLoading) {
   var config = { cache: false };
   $scope.currentUser = JSON.parse($window.localStorage.getItem("luke"));
   $scope.refresh = function(){
-
    var alertPopup = $ionicPopup.alert({
      title: 'New Notification',
      template: '<center>A new change has been made! Refreshing the application...</center>'
    });
    alertPopup.then(function(res) {
+      $http.get(
+      "http://161.202.13.188:9000" + "/api/object/get/app/8/objecttype/34",config)
+    .success(function(data, status) { 
+        $window.localStorage['users'] = JSON.stringify(data);
+        $window.localStorage['daisy'] = JSON.stringify(data[0]);
+        // $ionicLoading.hide();
+        // $window.localStorage['currentUser'] = JSON.stringify(data);
+        // $window.localStorage['avail'] = JSON.stringify(data[0].availabTasks);
+        $window.localStorage['luke'] = JSON.stringify(data[2]);
+        $state.go('menu.tab.profile',{},{reload:true});
+        $ionicLoading.hide();
+    }).error(function(data, status){
+      $ionicLoading.hide();
+      $scope.message = data;
+    }); 
      $scope.$broadcast('scroll.refreshComplete');
    });
     
   }
+  $scope.currentUser = JSON.parse($window.localStorage.getItem("luke"));
 })
 
 
-.controller('ViewMyTaskDetailCtrl', function($rootScope, $ionicPopup, $ionicModal, $http, $cordovaCamera, $scope, $ionicActionSheet, $filter,$window, $state, $ionicLoading, $stateParams){
+.controller('ViewMyTaskDetailCtrl', function($rootScope, $ionicPopup, $ionicModal, $http, $scope, $ionicActionSheet, $filter,$window, $state, $ionicLoading, $stateParams){
   var config = { cache: false };
   // get individual task according to ID
   $scope.taskId = $stateParams.id;
@@ -418,6 +483,11 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
       }
       
   }
+  $scope.showSink = true;
+  $scope.switchImage = function()
+  {
+      $scope.showSink = !$scope.showSink;
+  }
   // var today = new Date();
   // var taskStartDate = new Date("2006/01/01");
   // alert(taskStartDate);
@@ -425,12 +495,12 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
   //take photo
    $scope.takeUpTask = function(){
       var year = $scope.task.startDate.substr($scope.task.startDate.length - 4,4);
-      var month = $scope.task.startDate.substr(3,2);
+      var month = "" + (parseInt($scope.task.startDate.substr(3,2))- 1);
       var date = $scope.task.startDate.substr(0,2);
-      var hour = $scope.task.startTime.substr(0,2);
+      var hour = $scope.task.startTime.substr(0,2) ;
       var min = $scope.task.startTime.substr(3,2);
-      var date = new Date(year,month,date,hour,min);
-      if(date > new Date()){
+      var dateTime = new Date(year,month,date,hour,min,"00","00");
+      if(dateTime > new Date()){
         var alertPopup = $ionicPopup.alert({
            title: 'Error',
            template: '<center>Cannot take up a task in a future date!</center>'
@@ -477,54 +547,102 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
     }
    };
 
-   $scope.openCameraActionSheet = function(){
-        var hideSheet = $ionicActionSheet.show({
-          buttons: [
-            { text: 'Use Camera' },
-            { text: 'Choose Photo' }
-          ],
-          cancelText: 'Cancel',
-          cancel: function() {
-          },
-          buttonClicked: function(index) {
-            var source = 0;
+   $scope.picChange = function(evt){ 
+    //bring selected photo in
+    //get files captured through input
+      var fileInput = evt.target.files;
+      if(fileInput.length>0){
+      //get the file
+        //window url 
+        var windowURL = window.URL || window.webkitURL; 
+        //picture url
+        var picURL = windowURL.createObjectURL(fileInput[0]);
 
-        if (navigator.camera) {
-          if (index == 0) {
-            source = navigator.camera.PictureSourceType.CAMERA;
-          } else if (index == 1) {
-            source = navigator.camera.PictureSourceType.PHOTOLIBRARY || 0;
-          }
-
-          var config = {
-            quality: 75,
-            sourceType: source,
-            encodingType: navigator.camera.EncodingType.PNG,
-            destinationType: navigator.camera.DestinationType.DATA_URL,
-            correctOrientation: true,
-            allowEdit: true,
-            saveToPhotoAlbum: true
-          };
-
-          navigator.camera.getPicture(
-
-            function(imageURI) {
-
-              $scope.task.photos.push(imageURI);
-              alert(imageURI);
-             
-            }, function(err) {
-              console.err(err);
-            },
-            config);
-        } else {
-          $rootScope.message = 'Unable to access camera. Are you on browser?';
-        }
-
-        return true;
+        //get canvas
+        var photoCanvas = document.getElementById("capturedPhoto");
+        var ctx = photoCanvas.getContext("2d");
+        $scope.image = picURL;
+        //release object url
+        windowURL.revokeObjectURL(picURL);
       }
-    });
     };
+
+   // $scope.openCameraActionSheet = function(){
+   //      var hideSheet = $ionicActionSheet.show({
+   //        buttons: [
+   //          { text: 'Use Camera' },
+   //          { text: 'Choose Photo' }
+   //        ],
+   //        cancelText: 'Cancel',
+   //        cancel: function() {
+   //        },
+   //        buttonClicked: function(index) {
+   //          var source = 0;
+   //          var errorCallback = function(e) {
+   //            console.log('Reeeejected!', e);
+   //          };
+
+   //          // Not showing vendor prefixes.
+   //          navigator.getUserMedia({video: true}, function(localMediaStream) {
+   //            var video = document.querySelector('video');
+   //            video.src = window.URL.createObjectURL(localMediaStream);
+
+   //            // Note: onloadedmetadata doesn't fire in Chrome when using it with getUserMedia.
+   //            // See crbug.com/110938.
+   //            video.onloadedmetadata = function(e) {
+   //              // Ready to go. Do some stuff.
+   //            };
+   //          }, errorCallback);
+   //          var hasGetUserMedia = function() {
+   //            return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
+   //                      navigator.mozGetUserMedia || navigator.msGetUserMedia);
+   //          }
+
+   //          if (hasGetUserMedia()) {
+   //            // Good to go!
+   //            alert('yo');
+   //          } else {
+   //            alert('getUserMedia() is not supported in your browser');
+   //          };
+
+   //      if (navigator.camera) {
+   //        if (index == 0) {
+   //          source = navigator.camera.PictureSourceType.CAMERA;
+   //        } else if (index == 1) {
+   //          source = navigator.camera.PictureSourceType.PHOTOLIBRARY || 0;
+   //        } else {
+   //          alert("no navigator found!");
+   //        }
+
+   //        var config = {
+   //          quality: 75,
+   //          sourceType: source,
+   //          encodingType: navigator.camera.EncodingType.PNG,
+   //          destinationType: navigator.camera.DestinationType.DATA_URL,
+   //          correctOrientation: true,
+   //          allowEdit: true,
+   //          saveToPhotoAlbum: true
+   //        };
+
+   //        navigator.camera.getPicture(
+
+   //          function(imageURI) {
+
+   //            $scope.task.photos.push(imageURI);
+   //            // alert(imageURI);
+             
+   //          }, function(err) {
+   //            console.err(err);
+   //          },
+   //          config);
+   //      } else {
+   //        $rootScope.message = 'Unable to access camera. Are you on browser?';
+   //      }
+
+   //      return true;
+   //    }
+   //  });
+   // / };
 
     $ionicModal.fromTemplateUrl('templates/modal-event-photo.html', function($ionicModal) {
         $scope.modalPhoto = $ionicModal;
@@ -545,10 +663,10 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
     $scope.cancelPhotoEdit = function() {
         $scope.modalPhoto.hide();
     };
-    //remove the selected photo
-    $scope.removePhoto = function($index){
-      $scope.copyOfPhotos.splice($index,1);
-    };
+    // //remove the selected photo
+    // $scope.removePhoto = function($index){
+    //   $scope.copyOfPhotos.splice($index,1);
+    // };
     //remove the photo from actual array
     //reset the copy to blank
     $scope.donePhotoEdit = function(){
@@ -558,6 +676,43 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
 
     };
 
+    $scope.withdrawTask = function(){
+        
+        $ionicLoading.show({
+          template: '<i class="icon ion-loading-c"></i> Withdrawing up task..'
+        });
+        var request = {
+              appId: 8,
+              properties: [
+                  {isAvailable: "true"}
+              ]
+          };
+
+        $http.put("http://161.202.13.188:9000/api/object/" + $scope.task.id + "/update/properties",JSON.stringify(request),config)
+        .success(function(data, status) {
+          $http.get(
+            "http://161.202.13.188:9000/api/object/get/app/8/objecttype/34",config)
+          .success(function(data, status) { 
+              $window.localStorage['users'] = JSON.stringify(data);
+              $window.localStorage['daisy'] = JSON.stringify(data[0]);
+              // $window.localStorage['avail'] = JSON.stringify(data[0].availabTasks);
+              $window.localStorage['luke'] = JSON.stringify(data[2]);
+              $state.go('menu.tab.my-tasks',{},{reload:true});
+          }).error(function(data, status){
+            $ionicLoading.hide();
+            $scope.message = data;
+          }).finally(function(){
+          $ionicLoading.hide();
+      });
+          
+     }).error(function(data, status){
+        console.log(data);
+      }).finally(function(){
+          $ionicLoading.hide();
+      });
+    
+    };
+
    $scope.completeTask = function(){
       $ionicLoading.show({
         template: '<i class="icon ion-loading-c"></i> Completing task..'
@@ -565,10 +720,11 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
       var request = {
             appId: 8,
             properties: [
-                {isCompleted: "true"}
+                {isCompleted: "true"},
+                {isPending: "true"}
             ]
         };
-        $scope.task.isAvailable = "false";
+      $scope.task.isAvailable = "false";
     $http.put("http://161.202.13.188:9000/api/object/" + $scope.task.id + "/update/properties",JSON.stringify(request),config)
     .success(function(data, status) {
        // $scope.allAvailableTasks.push(data);
@@ -578,12 +734,14 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
         var taskToFindLuke = $filter('filter')($scope.luke.availableTasks, {id:$scope.task.id})[0];
         $scope.lukeListIndex = $scope.luke.availableTasks.indexOf(taskToFindLuke);
         $scope.daisyListIndex = $scope.daisy.availableTasks.indexOf(taskToFindDaisy);
-        alert($scope.lukeListIndex);
-        alert($scope.daisyListIndex);
+        // alert($scope.lukeListIndex);
+        // alert($scope.daisyListIndex);
         $scope.luke.availableTasks.splice($scope.lukeListIndex,1);
         console.log($scope.luke.availableTasks);
         taskToFindLuke.isCompleted = "true";
+        taskToFindLuke.isPending = "true";
         taskToFindDaisy.isCompleted = "true";
+        taskToFindDaisy.isPending = "true";
         $scope.luke.completedTasks.push(taskToFindLuke);
         $scope.daisy.availableTasks.splice($scope.daisyListIndex,1);
         console.log($scope.daisy.availableTasks);
@@ -607,7 +765,8 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
               {"availableTasks": $scope.daisy.availableTasks},
               {"completedTasks": $scope.daisy.completedTasks},
               {"rejectedTasks": $scope.daisy.rejectedTasks},
-              {"proposedTasks": $scope.daisy.proposedTasks}
+              {"proposedTasks": $scope.daisy.proposedTasks},
+              {"balance": 0}
             ]
           }
           ,config)
@@ -629,7 +788,8 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
               {"availableTasks": $scope.luke.availableTasks},
               {"completedTasks": $scope.luke.completedTasks},
               {"rejectedTasks": $scope.luke.rejectedTasks},
-              {"proposedTasks": $scope.luke.proposedTasks}
+              {"proposedTasks": $scope.luke.proposedTasks},
+              {"balance": $scope.luke.balance}
             ]
           }
               ,config)
@@ -664,7 +824,7 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
             {isCompleted: "false"},
             {isAvailable: "false"},
             {isRejected: "false"},
-            {rejectedMessage: ""}
+            {rejectedMessage: $scope.task.rejectedMessage}
         ]
     };
     $http.put("http://161.202.13.188:9000/api/object/" + $scope.task.id + "/update/properties",JSON.stringify(request),config)
@@ -676,12 +836,18 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
         var taskToFindLuke = $filter('filter')($scope.luke.rejectedTasks, {id:$scope.task.id})[0];
         $scope.lukeListIndex = $scope.luke.rejectedTasks.indexOf(taskToFindLuke);
         $scope.daisyListIndex = $scope.daisy.rejectedTasks.indexOf(taskToFindDaisy);
-        alert($scope.lukeListIndex);
-        alert($scope.daisyListIndex);
+        // alert($scope.lukeListIndex);
+        // alert($scope.daisyListIndex);
         $scope.luke.rejectedTasks.splice($scope.lukeListIndex,1);
         console.log($scope.luke.availableTasks);
         taskToFindLuke.isRejected = "false";
+        taskToFindLuke.isCompleted = "false";
+        taskToFindLuke.isAvailable = "false";
+        taskToFindLuke.rejectedMessage = $scope.task.rejectedMessage;
         taskToFindDaisy.isRejected = "false";
+        taskToFindDaisy.isCompleted = "false";
+        taskToFindDaisy.isAvailable = "false";
+        taskToFindDaisy.rejectedMessage = $scope.task.rejectedMessage;
         $scope.luke.availableTasks.push(taskToFindLuke);
         $scope.daisy.rejectedTasks.splice($scope.daisyListIndex,1);
         console.log($scope.daisy.availableTasks);
@@ -705,7 +871,8 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
               {"availableTasks": $scope.daisy.availableTasks},
               {"completedTasks": $scope.daisy.completedTasks},
               {"rejectedTasks": $scope.daisy.rejectedTasks},
-              {"proposedTasks": $scope.daisy.proposedTasks}
+              {"proposedTasks": $scope.daisy.proposedTasks},
+              {"balance": $scope.daisy.balance}
             ]
           }
           ,config)
@@ -727,7 +894,8 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
               {"availableTasks": $scope.luke.availableTasks},
               {"completedTasks": $scope.luke.completedTasks},
               {"rejectedTasks": $scope.luke.rejectedTasks},
-              {"proposedTasks": $scope.luke.proposedTasks}
+              {"proposedTasks": $scope.luke.proposedTasks},
+              {"proposedTasks": $scope.luke.balance}
             ]
           }
               ,config)
@@ -779,7 +947,7 @@ $scope, $http, $ionicModal, $ionicActionSheet, $ionicLoading)
         city: "Singapore",
         name: $scope.task.name,
         objectTypeId: 35,
-        userId: $scope.currentUser.id,
+        userId: 7,
         appId: 8,
         properties: [
             {name: $scope.task.name},

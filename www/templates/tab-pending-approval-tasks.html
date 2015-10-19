@@ -16,7 +16,7 @@
   <ion-refresher pulling-text="Pull to refresh" on-refresh="refresh()"></ion-refresher>
   <div class="has-header" ng-if="activeTab==1">
     <ion-list can-swipe="true" ng-show="currentUser.proposedTasks.length != 0">
-      <ion-item ng-repeat="task in currentUser.proposedTasks | filter:{isApproved : 'false'} && {isPending : 'true'}" ng-click = "detail(task)" >
+      <ion-item ng-repeat="task in currentUser.proposedTasks | filter:{isApprovedProposed : 'false'}" ng-click = "detail(task)" >
           <a class="item item-thumbnail-left">
             <img src="img/venkman.jpg">
             <h2>{{task.name}}</h2>
@@ -35,11 +35,11 @@
     </ion-list>
   </div>
   
-<!-- tab for in progress tasks -->
+<!-- tab for approved proposed tasks -->
 
   <div class="has-header" ng-if="activeTab==2">
-    <ion-list can-swipe="true" ng-show="currentUser.availableTasks.length != 0">
-      <ion-item ng-repeat="task in currentUser.availableTasks | filter: {  isApprovedProposed : 'true'}" ng-click = "viewApproved(task)">
+    <ion-list can-swipe="true" ng-show="currentUser.proposedTasks.length != 0">
+      <ion-item ng-repeat="task in currentUser.proposedTasks | filter: {  isApprovedProposed : 'true'} && {isRejected : 'false'}" ng-click = "viewApproved(task)">
           <a class="item item-thumbnail-left">
             <img src="img/venkman.jpg">
             <h2>{{task.name}}</h2>
